@@ -18,28 +18,37 @@
       text-align: center;
       color: #004085;
     }
+    h3 {
+      color: #004085;
+      margin-top: 30px;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 5px;
+    }
     label {
       font-weight: bold;
+      display: block;
+      margin-top: 10px;
     }
     input[type="number"] {
       width: 100%;
-      padding: 2px 5px;
-      margin: 3px 0 8px 0;
-      font-size: 13px;
+      padding: 10px;
+      margin: 8px 0 15px 0;
+      font-size: 14px;
       box-sizing: border-box;
       border: 1px solid #ddd;
-      border-radius: 4px;
-      height: 25px; /* Significantly reduced */
+      border-radius: 5px;
+      height: 40px;
     }
     button {
       background-color: #007bff;
       color: white;
-      padding: 10px; /* Slightly reduced */
+      padding: 12px;
       width: 100%;
       border: none;
       border-radius: 5px;
       cursor: pointer;
       font-size: 16px;
+      margin-top: 10px;
     }
     button:hover {
       background-color: #0056b3;
@@ -93,92 +102,520 @@
       background-color: #007bff;
       color: white;
       font-size: 14px;
+      position: sticky;
+      top: 0;
+    }
+    .career-options {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 10px;
+    }
+    .career-options h3 {
+      color: #004085;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .career-options ul {
+      padding-left: 20px;
+      columns: 2;
+      column-gap: 30px;
+    }
+    .career-options li {
+      margin-bottom: 8px;
+      line-height: 1.4;
+      break-inside: avoid;
+    }
+    .college-table {
+      margin-top: 30px;
+      overflow-x: auto;
+    }
+    .category-a {
+      background-color: #e6ffe6; /* Light green */
+    }
+    .category-b {
+      background-color: #e6f7ff; /* Light blue */
+    }
+    .category-c {
+      background-color: #ffe6e6; /* Light red */
+    }
+    
+    /* Filter styles */
+    .filter-container {
+      margin: 20px 0;
+      padding: 15px;
+      background-color: #f0f8ff;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .filter-item {
+      flex: 1;
+      min-width: 150px;
+    }
+    .filter-item select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    .filter-btn {
+      background-color: #28a745;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .filter-btn:hover {
+      background-color: #218838;
+    }
+    .reset-btn {
+      background-color: #6c757d;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-left: 10px;
+    }
+    .reset-btn:hover {
+      background-color: #5a6268;
+    }
+    .nutrition-highlight {
+      background-color: #ffffe0;
+      padding: 2px 5px;
+      border-radius: 3px;
     }
     
     @media (max-width: 600px) {
       input[type="number"] {
-        padding: 2px 5px;
-        font-size: 14px;
-        height: 28px; /* Further reduced */
+        padding: 12px;
+        font-size: 15px;
+        height: 45px;
       }
       button {
-        padding: 8px; /* Further reduced */
+        padding: 14px;
+      }
+      .career-options ul {
+        columns: 1;
+      }
+      table {
+        font-size: 12px;
+      }
+      .filter-row {
+        flex-direction: column;
+        gap: 15px;
+      }
+      .filter-item {
+        width: 100%;
       }
     }
   </style>
 </head>
 <body>
-  <h3>MBBS/BDS Aggregate & Guide</h3>
+  <h2>MBBS/BDS Career Calculator</h2>
 
   <form id="aggForm">
     <label>Matric Marks (Out of 1100):</label>
-    <input type="number" id="matric" max="1100" required>
+    <input type="number" id="matric" max="1100" min="0" required>
 
     <label>FSc Part-1 Marks (Out of 555):</label>
-    <input type="number" id="fsc1" max="555" required>
+    <input type="number" id="fsc1" max="555" min="0" required>
 
     <label>FSc Part-2 Marks (Out of 645):</label>
-    <input type="number" id="fsc2" max="645" required>
+    <input type="number" id="fsc2" max="645" min="0" required>
 
     <label>MDCAT Marks (Out of 200):</label>
-    <input type="number" id="mdcat" max="200" required>
+    <input type="number" id="mdcat" max="200" min="0" required>
 
     <button type="submit">Calculate Aggregate</button>
   </form>
 
   <div id="result"></div>
 
+  <!-- Permanent Career Options Section -->
+  <div class="career-options">
+    <h3>Career Options in Medical & Health Sciences</h3>
+    <ul>
+      <li><strong>MBBS</strong> – Bachelor of Medicine and Surgery</li>
+      <li><strong>BDS</strong> – Bachelor of Dental Surgery</li>
+      <li><strong>Pharm-D</strong> – Doctor of Pharmacy</li>
+      <li><strong>DPT</strong> – Doctor of Physical Therapy</li>
+      <li><strong>BSN</strong> – Bachelor of Science in Nursing</li>
+      <li><strong>MLT</strong> – Medical Laboratory Technology</li>
+      <li><strong>Radiology / Imaging Technology</strong></li>
+      <li><strong>BS Microbiology / Biotechnology</strong></li>
+      <li class="nutrition-highlight"><strong>BS Human Nutrition and Dietetics</strong></li>
+      <li><strong>BS Clinical Nutrition</strong></li>
+      <li><strong>BS Food Science and Nutrition</strong></li>
+      <li><strong>BS Speech & Hearing Sciences</strong></li>
+      <li><strong>BS Anesthesia Technology</strong></li>
+      <li><strong>BS Optometry & Vision Sciences</strong></li>
+      <li><strong>BS Emergency & Intensive Care Sciences</strong></li>
+      <li><strong>BS Psychology / Sociology</strong> (Health-related fields)</li>
+      <li><strong>BS Public Health / Epidemiology</strong></li>
+    </ul>
+  </div>
+
+  <!-- Medical Colleges Merit List with Filter -->
+  <div class="college-table">
+    <h3>Medical Colleges Merit List (2023)</h3>
+    
+    <!-- Filter Section -->
+    <div class="filter-container">
+      <h4>Filter Colleges</h4>
+      <div class="filter-row">
+        <div class="filter-item">
+          <label for="category-filter">By Category:</label>
+          <select id="category-filter">
+            <option value="all">All Categories</option>
+            <option value="A">Category A</option>
+            <option value="B">Category B</option>
+            <option value="C">Category C</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label for="city-filter">By City:</label>
+          <select id="city-filter">
+            <option value="all">All Cities</option>
+            <option value="Lahore">Lahore</option>
+            <option value="Islamabad">Islamabad</option>
+            <option value="Rawalpindi">Rawalpindi</option>
+            <option value="Faisalabad">Faisalabad</option>
+            <option value="Multan">Multan</option>
+            <option value="Sialkot">Sialkot</option>
+            <option value="Gujranwala">Gujranwala</option>
+            <option value="Bahawalpur">Bahawalpur</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label for="sector-filter">By Sector:</label>
+          <select id="sector-filter">
+            <option value="all">All Sectors</option>
+            <option value="Public">Public</option>
+            <option value="Private">Private</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <button type="button" id="apply-filter" class="filter-btn">Apply Filter</button>
+        <button type="button" id="reset-filter" class="reset-btn">Reset</button>
+      </div>
+    </div>
+    
+    <table id="college-table">
+      <thead>
+        <tr>
+          <th>College / University Name</th>
+          <th>City</th>
+          <th>Sector</th>
+          <th>Category</th>
+          <th>Closing Merit (%)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Category A Colleges -->
+        <tr class="category-a">
+          <td>Army Medical College (AMC)</td>
+          <td>Rawalpindi</td>
+          <td>Public</td>
+          <td>A</td>
+          <td>95.2</td>
+        </tr>
+        <tr class="category-a">
+          <td>SZAB Medical University</td>
+          <td>Islamabad</td>
+          <td>Public</td>
+          <td>A</td>
+          <td>94.88</td>
+        </tr>
+        <tr class="category-a">
+          <td>King Edward Medical University (KEMU)</td>
+          <td>Lahore</td>
+          <td>Public</td>
+          <td>A</td>
+          <td>93.7</td>
+        </tr>
+        <tr class="category-a">
+          <td>Allama Iqbal Medical College (AIMC)</td>
+          <td>Lahore</td>
+          <td>Public</td>
+          <td>A</td>
+          <td>92.39</td>
+        </tr>
+        <tr class="category-a">
+          <td>Rawalpindi Medical University (RMU)</td>
+          <td>Rawalpindi</td>
+          <td>Public</td>
+          <td>A</td>
+          <td>92.39</td>
+        </tr>
+        <tr class="category-a">
+          <td>Services Institute of Medical Sciences (SIMS)</td>
+          <td>Lahore</td>
+          <td>Public</td>
+          <td>A</td>
+          <td>92.39</td>
+        </tr>
+        <tr class="category-a">
+          <td>Nishtar Medical University</td>
+          <td>Multan</td>
+          <td>Public</td>
+          <td>A</td>
+          <td>92.21</td>
+        </tr>
+        <tr class="category-a">
+          <td>Fatima Jinnah Medical University (FJMU)</td>
+          <td>Lahore</td>
+          <td>Public</td>
+          <td>A</td>
+          <td>91.68</td>
+        </tr>
+        <tr class="category-a">
+          <td>Shifa College of Medicine</td>
+          <td>Islamabad</td>
+          <td>Private</td>
+          <td>A</td>
+          <td>92.8</td>
+        </tr>
+        <tr class="category-a">
+          <td>CMH Lahore Medical College</td>
+          <td>Lahore</td>
+          <td>Private</td>
+          <td>A</td>
+          <td>87.2</td>
+        </tr>
+        <tr class="category-a">
+          <td>FMH College of Medicine & Dentistry</td>
+          <td>Lahore</td>
+          <td>Private</td>
+          <td>A</td>
+          <td>87</td>
+        </tr>
+        <tr class="category-a">
+          <td>Shalamar Medical & Dental College</td>
+          <td>Lahore</td>
+          <td>Private</td>
+          <td>A</td>
+          <td>86.5</td>
+        </tr>
+
+        <!-- Category B Colleges -->
+        <tr class="category-b">
+          <td>Faisalabad Medical University (Ex-PMC)</td>
+          <td>Faisalabad</td>
+          <td>Public</td>
+          <td>B</td>
+          <td>91.62</td>
+        </tr>
+        <tr class="category-b">
+          <td>Gujranwala Medical College</td>
+          <td>Gujranwala</td>
+          <td>Public</td>
+          <td>B</td>
+          <td>91.48</td>
+        </tr>
+        <tr class="category-b">
+          <td>Quaid-e-Azam Medical College</td>
+          <td>Bahawalpur</td>
+          <td>Public</td>
+          <td>B</td>
+          <td>91.3</td>
+        </tr>
+        <tr class="category-b">
+          <td>Sahiwal Medical College</td>
+          <td>Sahiwal</td>
+          <td>Public</td>
+          <td>B</td>
+          <td>91.2</td>
+        </tr>
+        <tr class="category-b">
+          <td>Federal Medical College (FMC)</td>
+          <td>Islamabad</td>
+          <td>Public</td>
+          <td>B</td>
+          <td>91.14</td>
+        </tr>
+        <tr class="category-b">
+          <td>Dera Ghazi Khan Medical College</td>
+          <td>D.G. Khan</td>
+          <td>Public</td>
+          <td>B</td>
+          <td>91.1</td>
+        </tr>
+        <tr class="category-b">
+          <td>Sheikh Zayed Medical College</td>
+          <td>Rahim Yar Khan</td>
+          <td>Public</td>
+          <td>B</td>
+          <td>91</td>
+        </tr>
+        <tr class="category-b">
+          <td>Khawaja Muhammad Safdar Medical College</td>
+          <td>Sialkot</td>
+          <td>Public</td>
+          <td>B</td>
+          <td>91</td>
+        </tr>
+        <tr class="category-b">
+          <td>Nawaz Sharif Medical College</td>
+          <td>Gujrat</td>
+          <td>Public</td>
+          <td>B</td>
+          <td>90.9</td>
+        </tr>
+        <tr class="category-b">
+          <td>Sheikh Khalifa Bin Zayed Al-Nahyan Medical College</td>
+          <td>Lahore</td>
+          <td>Public</td>
+          <td>B</td>
+          <td>90.8</td>
+        </tr>
+        <tr class="category-b">
+          <td>Islamabad Medical & Dental College (IMDC)</td>
+          <td>Islamabad</td>
+          <td>Private</td>
+          <td>B</td>
+          <td>85</td>
+        </tr>
+        <tr class="category-b">
+          <td>Rashid Latif Medical College</td>
+          <td>Lahore</td>
+          <td>Private</td>
+          <td>B</td>
+          <td>85</td>
+        </tr>
+        <tr class="category-b">
+          <td>Foundation University Medical College</td>
+          <td>Rawalpindi</td>
+          <td>Private</td>
+          <td>B</td>
+          <td>84.5</td>
+        </tr>
+        <tr class="category-b">
+          <td>Lahore Medical & Dental College (LMDC)</td>
+          <td>Lahore</td>
+          <td>Private</td>
+          <td>B</td>
+          <td>84.5</td>
+        </tr>
+        <tr class="category-b">
+          <td>Fazaia Medical College</td>
+          <td>Islamabad</td>
+          <td>Private</td>
+          <td>B</td>
+          <td>84</td>
+        </tr>
+        <tr class="category-b">
+          <td>University College of Medicine & Dentistry (UCMD)</td>
+          <td>Lahore</td>
+          <td>Private</td>
+          <td>B</td>
+          <td>84</td>
+        </tr>
+        <tr class="category-b">
+          <td>Aziz Fatimah Medical & Dental College</td>
+          <td>Faisalabad</td>
+          <td>Private</td>
+          <td>B</td>
+          <td>83.5</td>
+        </tr>
+        <tr class="category-b">
+          <td>University Medical & Dental College (UMDC)</td>
+          <td>Faisalabad</td>
+          <td>Private</td>
+          <td>B</td>
+          <td>83</td>
+        </tr>
+
+        <!-- Category C Colleges -->
+        <tr class="category-c">
+          <td>Yusra Medical & Dental College</td>
+          <td>Islamabad</td>
+          <td>Private</td>
+          <td>C</td>
+          <td>82</td>
+        </tr>
+        <tr class="category-c">
+          <td>Islam Medical College</td>
+          <td>Sialkot</td>
+          <td>Private</td>
+          <td>C</td>
+          <td>82</td>
+        </tr>
+        <tr class="category-c">
+          <td>Continental Medical College</td>
+          <td>Lahore</td>
+          <td>Private</td>
+          <td>C</td>
+          <td>81.5</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
   <script>
     document.getElementById("aggForm").addEventListener("submit", function (e) {
       e.preventDefault();
 
-      const matric = parseFloat(document.getElementById("matric").value);
-      const fsc1 = parseFloat(document.getElementById("fsc1").value);
-      const fsc2 = parseFloat(document.getElementById("fsc2").value);
-      const mdcat = parseFloat(document.getElementById("mdcat").value);
+      // Get input values
+      const matric = parseFloat(document.getElementById("matric").value) || 0;
+      const fsc1 = parseFloat(document.getElementById("fsc1").value) || 0;
+      const fsc2 = parseFloat(document.getElementById("fsc2").value) || 0;
+      const mdcat = parseFloat(document.getElementById("mdcat").value) || 0;
 
-      if (isNaN(matric) || isNaN(fsc1) || isNaN(fsc2) || isNaN(mdcat)) {
-        document.getElementById("result").innerHTML = "Please fill all fields correctly.";
+      // Validate inputs
+      if (matric > 1100 || fsc1 > 555 || fsc2 > 645 || mdcat > 200) {
+        document.getElementById("result").innerHTML = 
+          "<div style='color:red;'>Error: Marks cannot exceed maximum values!</div>";
         return;
       }
 
-      const totalFsc = fsc1 + fsc2;
-      const fullFscMarks = 555 + 645; // 555 for Part-1 and 645 for Part-2
-
+      // Calculate percentages
       const matricPercent = (matric / 1100) * 10;
-      const fscPercent = (totalFsc / fullFscMarks) * 40;
+      const fscPercent = ((fsc1 + fsc2) / (555 + 645)) * 40;
       const mdcatPercent = (mdcat / 200) * 50;
 
       const aggregate = (matricPercent + fscPercent + mdcatPercent).toFixed(2);
 
+      // Build result HTML
       let resultHTML = `<div class="aggregate-result">Your Aggregate: ${aggregate}%</div>`;
       resultHTML += `<div class="formula">
         ➤ Matric: (${matric}/1100) × 10 = ${matricPercent.toFixed(2)}%<br>
-        ➤ FSc: (${totalFsc}/${fullFscMarks}) × 40 = ${fscPercent.toFixed(2)}%<br>
+        ➤ FSc: (${fsc1 + fsc2}/1200) × 40 = ${fscPercent.toFixed(2)}%<br>
         ➤ MDCAT: (${mdcat}/200) × 50 = ${mdcatPercent.toFixed(2)}%
       </div>`;
 
       // Career Suggestion
-      resultHTML += `<div class="career-section"><h4>Career Suggestion:</h4>
-        <div class="career-suggestion">`;
-
+      let suggestion = "";
+      
       if (aggregate >= 91) {
-        resultHTML += "MBBS in Top Govt. Colleges";
+        suggestion = "MBBS in Top Govt. Colleges";
       } else if (aggregate >= 89) {
-        resultHTML += "MBBS/BDS Public Sector, Mid Colleges";
+        suggestion = "MBBS/BDS Public Sector, Mid Colleges";
       } else if (aggregate >= 85) {
-        resultHTML += "BDS / Private MBBS";
+        suggestion = "BDS / Private MBBS";
       } else if (aggregate >= 83) {
-        resultHTML += "MBBS/BDS in NUMS-Affiliated Colleges (with NUMS Test)";
+        suggestion = "MBBS/BDS in NUMS-Affiliated Colleges (with NUMS Test)";
       } else if (aggregate >= 75) {
-        resultHTML += "Allied Health Sciences (DPT, BSN, Pharm-D)";
+        suggestion = "Allied Health Sciences (DPT, BSN, Pharm-D)";
       } else if (aggregate >= 60) {
-        resultHTML += "Bio/Health Sciences (Biotech, Nutrition)";
+        suggestion = "Bio/Health Sciences (Biotech, Nutrition)";
       } else {
-        resultHTML += "Alternate paths (IT, Diploma, Supportive)";
+        suggestion = "Alternate paths (IT, Diploma, Supportive)";
       }
 
-      resultHTML += `</div></div>`;
+      resultHTML += `<div class="career-section"><h4>Career Suggestion:</h4>
+        <div class="career-suggestion">${suggestion}</div></div>`;
 
       // Add full chart
       resultHTML += `
@@ -198,6 +635,42 @@
 
       document.getElementById("result").innerHTML = resultHTML;
     });
+
+    // Filter functionality
+    document.getElementById("apply-filter").addEventListener("click", function() {
+      filterColleges();
+    });
+
+    document.getElementById("reset-filter").addEventListener("click", function() {
+      document.getElementById("category-filter").value = "all";
+      document.getElementById("city-filter").value = "all";
+      document.getElementById("sector-filter").value = "all";
+      filterColleges();
+    });
+
+    function filterColleges() {
+      const categoryFilter = document.getElementById("category-filter").value;
+      const cityFilter = document.getElementById("city-filter").value;
+      const sectorFilter = document.getElementById("sector-filter").value;
+      
+      const rows = document.querySelectorAll("#college-table tbody tr");
+      
+      rows.forEach(row => {
+        const category = row.cells[3].textContent;
+        const city = row.cells[1].textContent;
+        const sector = row.cells[2].textContent;
+        
+        const categoryMatch = categoryFilter === "all" || category === categoryFilter;
+        const cityMatch = cityFilter === "all" || city === cityFilter;
+        const sectorMatch = sectorFilter === "all" || sector === sectorFilter;
+        
+        if (categoryMatch && cityMatch && sectorMatch) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      });
+    }
   </script>
 </body>
 </html>
