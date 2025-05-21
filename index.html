@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MBBS/BDS Career Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+      background-color: #f0f8ff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    h2 {
+      text-align: center;
+      color: #004085;
+    }
+    label {
+      font-weight: bold;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 2px 5px;
+      margin: 3px 0 8px 0;
+      font-size: 13px;
+      box-sizing: border-box;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      height: 25px; /* Significantly reduced */
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px; /* Slightly reduced */
+      width: 100%;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #result {
+      margin-top: 20px;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px #bbb;
+    }
+    .aggregate-result {
+      font-size: 22px;
+      font-weight: bold;
+      color: #d9534f;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .formula {
+      font-size: 14px;
+      color: #333;
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+    .career-section {
+      margin-top: 20px;
+      padding: 15px;
+      background: #e2f0fb;
+      border-radius: 10px;
+    }
+    .career-section h4 {
+      margin-bottom: 10px;
+      color: #003366;
+      font-size: 16px;
+    }
+    .career-suggestion {
+      font-size: 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid #999;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 600px) {
+      input[type="number"] {
+        padding: 2px 5px;
+        font-size: 14px;
+        height: 28px; /* Further reduced */
+      }
+      button {
+        padding: 8px; /* Further reduced */
+      }
+    }
+  </style>
+</head>
+<body>
+  <h3>MBBS/BDS Aggregate & Guide</h3>
+
+  <form id="aggForm">
+    <label>Matric Marks (Out of 1100):</label>
+    <input type="number" id="matric" max="1100" required>
+
+    <label>FSc Part-1 Marks (Out of 555):</label>
+    <input type="number" id="fsc1" max="555" required>
+
+    <label>FSc Part-2 Marks (Out of 645):</label>
+    <input type="number" id="fsc2" max="645" required>
+
+    <label>MDCAT Marks (Out of 200):</label>
+    <input type="number" id="mdcat" max="200" required>
+
+    <button type="submit">Calculate Aggregate</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    document.getElementById("aggForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const matric = parseFloat(document.getElementById("matric").value);
+      const fsc1 = parseFloat(document.getElementById("fsc1").value);
+      const fsc2 = parseFloat(document.getElementById("fsc2").value);
+      const mdcat = parseFloat(document.getElementById("mdcat").value);
+
+      if (isNaN(matric) || isNaN(fsc1) || isNaN(fsc2) || isNaN(mdcat)) {
+        document.getElementById("result").innerHTML = "Please fill all fields correctly.";
+        return;
+      }
+
+      const totalFsc = fsc1 + fsc2;
+      const fullFscMarks = 555 + 645; // 555 for Part-1 and 645 for Part-2
+
+      const matricPercent = (matric / 1100) * 10;
+      const fscPercent = (totalFsc / fullFscMarks) * 40;
+      const mdcatPercent = (mdcat / 200) * 50;
+
+      const aggregate = (matricPercent + fscPercent + mdcatPercent).toFixed(2);
+
+      let resultHTML = `<div class="aggregate-result">Your Aggregate: ${aggregate}%</div>`;
+      resultHTML += `<div class="formula">
+        ➤ Matric: (${matric}/1100) × 10 = ${matricPercent.toFixed(2)}%<br>
+        ➤ FSc: (${totalFsc}/${fullFscMarks}) × 40 = ${fscPercent.toFixed(2)}%<br>
+        ➤ MDCAT: (${mdcat}/200) × 50 = ${mdcatPercent.toFixed(2)}%
+      </div>`;
+
+      // Career Suggestion
+      resultHTML += `<div class="career-section"><h4>Career Suggestion:</h4>
+        <div class="career-suggestion">`;
+
+      if (aggregate >= 91) {
+        resultHTML += "MBBS in Top Govt. Colleges";
+      } else if (aggregate >= 89) {
+        resultHTML += "MBBS/BDS Public Sector, Mid Colleges";
+      } else if (aggregate >= 85) {
+        resultHTML += "BDS / Private MBBS";
+      } else if (aggregate >= 83) {
+        resultHTML += "MBBS/BDS in NUMS-Affiliated Colleges (with NUMS Test)";
+      } else if (aggregate >= 75) {
+        resultHTML += "Allied Health Sciences (DPT, BSN, Pharm-D)";
+      } else if (aggregate >= 60) {
+        resultHTML += "Bio/Health Sciences (Biotech, Nutrition)";
+      } else {
+        resultHTML += "Alternate paths (IT, Diploma, Supportive)";
+      }
+
+      resultHTML += `</div></div>`;
+
+      // Add full chart
+      resultHTML += `
+        <div class="career-section">
+          <h4>Percentage Range & Career Category:</h4>
+          <table>
+            <tr><th>% Aggregate</th><th>Career Category</th></tr>
+            <tr><td>91%+</td><td>MBBS in Top Govt. Colleges</td></tr>
+            <tr><td>89–90.99%</td><td>MBBS/BDS Public Sector, Mid Colleges</td></tr>
+            <tr><td>85–88.99%</td><td>BDS / Private MBBS</td></tr>
+            <tr><td>83–84.99%</td><td>MBBS/BDS in NUMS-Affiliated Colleges</td></tr>
+            <tr><td>75–82.99%</td><td>Allied Health Sciences (DPT, BSN, Pharm-D)</td></tr>
+            <tr><td>60–74.99%</td><td>Bio/Health Sciences (Biotech, Nutrition)</td></tr>
+            <tr><td>Below 60%</td><td>Alternate paths (IT, Diploma, Supportive)</td></tr>
+          </table>
+        </div>`;
+
+      document.getElementById("result").innerHTML = resultHTML;
+    });
+  </script>
+</body>
+</html>
