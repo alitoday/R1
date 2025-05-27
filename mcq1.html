@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Class Playgroup & Nursery Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f0f8ff;
+    }
+    .header, .quiz-container {
+      max-width: 800px;
+      margin: auto;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .center-status {
+      flex: 1 1 100%;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .quiz-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    .question {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+    .options label {
+      display: block;
+      margin: 5px 0;
+    }
+    .options label img {
+      vertical-align: middle; /* Align image with text */
+      margin-right: 8px;
+      width: 30px; /* Adjust size as needed */
+      height: 30px;
+    }
+    .btn {
+      margin-top: 20px;
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 30px;
+      font-size: 22px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .green { color: green; }
+    .red { color: red; }
+    #namePrompt {
+      text-align: center;
+      margin-top: 100px;
+    }
+    #namePrompt input {
+      padding: 10px;
+      font-size: 16px;
+    }
+    #namePrompt button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    .percentage-display {
+      font-size: 28px;
+      font-weight: bolder;
+      margin: 15px 0;
+      display: block;
+    }
+    /* Style for bolding letters and numbers in questions/options */
+    .bold-content {
+        font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div id="namePrompt">
+  <h2>Please enter your name to start the quiz</h2>
+  <input type="text" id="userNameInput" placeholder="Enter your name" onkeyup="checkEnter(event)" />
+  <button onclick="startQuiz()">Start Quiz</button>
+</div>
+
+<div id="quizSection" style="display: none;">
+  <div class="header">
+    <div id="qCounter"></div>
+    <div id="timer">⏱️ 00:00:00</div>
+    <div class="center-status">
+      ✅ <span id="right" class="green">0</span> |
+      ❌ <span id="wrong" class="red">0</span>
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <div class="question" id="questionText">Loading...</div>
+    <div class="options" id="optionsContainer"></div>
+    <button class="btn" onclick="nextQuestion()">Next</button>
+  </div>
+
+  <div class="result" id="resultContainer"></div>
+</div>
+
+<script>
+let quizData = [
+  // Animals with Emojis/Images
+  { q: "What sound does a cow 🐄 make?", o: ["Meow", "Woof", "Moo", "Roar"], a: "Moo" },
+  { q: "Which animal says 'Woof Woof'?", o: ["Cat 🐱", "Dog 🐶", "Bird 🐦", "Sheep 🐑"], a: "Dog 🐶" },
+  { q: "Which animal lays eggs?", o: ["Cow 🐮", "Hen 🐔", "Dog 🐕", "Fish 🐠"], a: "Hen 🐔" },
+  { q: "What is a baby cat called?", o: ["Pup", "Calf", "Kitten", "Chick"], a: "Kitten" },
+  { q: "Which animal hops and has a pouch?", o: ["Tiger 🐅", "Kangaroo 🦘", "Elephant 🐘", "Lion 🦁"], a: "Kangaroo 🦘" },
+
+
+  // Colors with Emojis
+  { q: "What color is the sky? ☁️", o: ["Green", "Red", "Blue", "Yellow"], a: "Blue" },
+  { q: "What color is an apple? 🍎", o: ["Blue", "Green", "Red", "Purple"], a: "Red" },
+  { q: "What color is grass? 🌿", o: ["Brown", "Green", "Orange", "Pink"], a: "Green" },
+  { q: "Which color is not in a rainbow? 🌈", o: ["Red", "Blue", "Black", "Yellow"], a: "Black" },
+
+  // English Alphabets (with bolding and relevant images/emojis)
+  { q: "Which letter comes after **A** for 🍎 Apple?", o: ["**B**", "**C**", "**D**", "**E**"], a: "**B**" },
+  { q: "Which letter is before **D** for 🦆 Duck?", o: ["**A**", "**B**", "**C**", "**E**"], a: "**C**" },
+  { q: "What is the first letter of 'Banana' 🍌?", o: ["**B**", "**A**", "**P**", "**L**"], a: "**B**" },
+  { q: "Which letter comes between **E** and **G**?", o: ["**F**", "**H**", "**D**", "**I**"], a: "**F**" },
+  { q: "How many letters are in the word 'SUN' ☀️?", o: ["**1**", "**2**", "**3**", "**4**"], a: "**3**" },
+
+
+  // Urdu Alphabets (with bolding and relevant emojis)
+  { q: "اردو حرف **ا** کے بعد کونسا حرف آتا ہے؟", o: ["**ب**", "**پ**", "**ت**", "**ٹ**"], a: "**ب**" },
+  { q: "اردو حرف **ج** سے پہلے کونسا حرف آتا ہے؟", o: ["**ت**", "**ٹ**", "**پ**", "**چ**"], a: "**ت**" },
+  { q: "کیا **ف** ایک اردو حرف ہے؟", o: ["جی ہاں", "جی نہیں"], a: "جی ہاں" },
+  { q: "اردو حرف **م** کے بعد کونسا حرف آتا ہے؟", o: ["**ن**", "**ل**", "**ک**", "**و**"], a: "**ن**" },
+  { q: "کیا **ب** حرف 'بندر' 🐒 کا پہلا حرف ہے؟", o: ["جی ہاں", "جی نہیں"], a: "جی ہاں" },
+
+  // Numbers (Basic Counting with bolding and images/emojis)
+  { q: "How many fingers 🖐️ do you have on one hand?", o: ["**3**", "**4**", "**5**", "**6**"], a: "**5**" },
+  { q: "What number comes after **1** ☝️?", o: ["**0**", "**2**", "**3**", "**4**"], a: "**2**" },
+  { q: "What is **1** ➕ **1**?", o: ["**0**", "**1**", "**2**", "**3**"], a: "**2**" },
+  { q: "How many wheels 🚲 does a bicycle have?", o: ["**1**", "**2**", "**3**", "**4**"], a: "**2**" },
+  { q: "Count the number of sides in a triangle: **1, 2, ?** 🔺", o: ["**2**", "**3**", "**4**", "**5**"], a: "**3**" },
+  { q: "What number comes before **5**?", o: ["**3**", "**4**", "**6**", "**7**"], a: "**4**" },
+
+
+  // Shapes with Emojis
+  { q: "Which shape has no corners? ⭕", o: ["Square ⬛", "Triangle 🔺", "Circle 🔵", "Rectangle 🟨"], a: "Circle 🔵" },
+  { q: "How many sides does a square 🟩 have?", o: ["2", "3", "4", "5"], a: "4" },
+  { q: "Which shape looks like a slice of pizza? 🍕", o: ["Circle", "Square", "Triangle", "Star"], a: "Triangle" },
+  { q: "What shape is a ball? ⚽", o: ["Cube", "Cylinder", "Sphere", "Pyramid"], a: "Sphere" },
+
+  // Body Parts with Emojis
+  { q: "Which body part do you use to see? 👀", o: ["Nose 👃", "Ears 👂", "Eyes 👀", "Mouth 👄"], a: "Eyes 👀" },
+  { q: "Which body part do you use to eat? 🍽️", o: ["Hand ✋", "Foot 🦶", "Mouth 👄", "Eye 👁️"], a: "Mouth 👄" },
+  { q: "How many noses 👃 do you have?", o: ["0", "1", "2", "3"], a: "1" },
+  { q: "You hear with your...? 👂", o: ["Hands", "Ears", "Legs", "Fingers"], a: "Ears" },
+
+  // General Knowledge (Simple) with Emojis
+  { q: "What do you drink when you are thirsty? 💧", o: ["Juice 🧃", "Milk 🥛", "Water 💧", "Soup 🥣"], a: "Water 💧" },
+  { q: "What do we use to write? ✍️", o: ["Spoon 🥄", "Fork 🍴", "Pencil ✏️", "Comb  Combs"], a: "Pencil ✏️" },
+  { q: "What season is it when it snows? ❄️", o: ["Summer ☀️", "Spring 🌷", "Autumn 🍂", "Winter ☃️"], a: "Winter ☃️" },
+  { q: "What do you wear on your feet? 🦶", o: ["Hat 👒", "Gloves 🧤", "Socks 🧦", "Shirt 👕"], a: "Socks 🧦" },
+
+  // Fruits and Vegetables with Emojis
+  { q: "Which fruit is yellow? 🟡", o: ["Apple 🍎", "Banana 🍌", "Grapes 🍇", "Orange 🍊"], a: "Banana 🍌" },
+  { q: "Which is a vegetable? 🥕", o: ["Mango 🥭", "Carrot 🥕", "Cherry 🍒", "Strawberry 🍓"], a: "Carrot 🥕" },
+  { q: "What fruit do monkeys 🐒 love to eat?", o: ["Apple", "Orange", "Banana", "Pear"], a: "Banana" },
+  { q: "What is the color of a tomato? 🍅", o: ["Green", "Blue", "Red", "Yellow"], a: "Red" }
+];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+shuffle(quizData);
+
+let currentQ = 0;
+let rightAnswers = 0;
+let wrongAnswers = 0;
+let seconds = 0;
+let userName = "";
+let timerInterval;
+
+function startQuiz() {
+  const input = document.getElementById("userNameInput").value.trim();
+  if (input === "") {
+    alert("Please enter your name.");
+    return;
+  }
+  userName = input;
+  document.getElementById("namePrompt").style.display = "none";
+  document.getElementById("quizSection").style.display = "block";
+  loadQuestion();
+  startTimer();
+}
+
+// Function to handle Enter key press
+function checkEnter(event) {
+  if (event.key === "Enter") {
+    startQuiz();
+  }
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    seconds++;
+    const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+    const secs = String(seconds % 60).padStart(2, '0');
+    document.getElementById("timer").innerText = `⏱️ ${hrs}:${mins}:${secs}`;
+  }, 1000);
+}
+
+function loadQuestion() {
+  const qData = quizData[currentQ];
+  document.getElementById("qCounter").innerText = `❓ Question ${currentQ + 1} of ${quizData.length}`;
+  // Use innerHTML to render bold tags, emojis, or img tags for question text
+  document.getElementById("questionText").innerHTML = qData.q;
+
+  // Render options with emojis/img tags
+  const optionsHTML = qData.o.map(opt =>
+    `<label><input type="radio" name="option" value="${opt}"> ${opt}</label>`
+  ).join("");
+  document.getElementById("optionsContainer").innerHTML = optionsHTML;
+}
+
+function nextQuestion() {
+  const selected = document.querySelector('input[name="option"]:checked');
+  if (!selected) {
+    alert("Please select an answer!");
+    return;
+  }
+
+  // A more robust way to clean HTML tags and emojis for comparison
+  // This regex removes any HTML tags (<...>) and common emoji patterns.
+  // For emojis, it's simplified; a more comprehensive emoji regex might be needed for all scenarios.
+  const cleanString = (str) => str.replace(/<[^>]*>/g, '').replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}]/gu, '').trim();
+
+  const selectedValueClean = cleanString(selected.value);
+  const correctAnswerClean = cleanString(quizData[currentQ].a);
+
+  if (selectedValueClean === correctAnswerClean) {
+    rightAnswers++;
+  } else {
+    wrongAnswers++;
+  }
+
+  document.getElementById("right").innerText = rightAnswers;
+  document.getElementById("wrong").innerText = wrongAnswers;
+
+  currentQ++;
+  if (currentQ < quizData.length) {
+    loadQuestion();
+  } else {
+    clearInterval(timerInterval);
+    showResult();
+  }
+}
+
+function showResult() {
+  document.querySelector(".quiz-container").style.display = "none";
+  const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+  const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+  const secs = String(seconds % 60).padStart(2, '0');
+
+  const totalQuestions = quizData.length;
+  const percentage = (rightAnswers / totalQuestions) * 100;
+
+  document.getElementById("resultContainer").innerHTML = `
+    👦 Student: <strong>${userName}</strong><br><br>
+    ✅ Correct: <span class="green">${rightAnswers}</span> |
+    ❌ Wrong: <span class="red">${wrongAnswers}</span><br>
+    <span class="percentage-display">📊 Percentage: ${percentage.toFixed(2)}%</span><br>
+    🎯 Total Score: ${rightAnswers} / ${quizData.length}<br>
+    ⏱️ Time Taken: ${hrs}:${mins}:${secs}
+  `;
+}
+</script>
+
+</body>
+</html>
