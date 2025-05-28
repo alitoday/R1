@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class 7 Pakistan Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f0f8ff;
+      line-height: 1.6;
+    }
+    .header, .quiz-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 0 10px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .center-status {
+      flex: 1 1 100%;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .quiz-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .question {
+      font-size: 20px;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+    .options label {
+      display: block;
+      margin: 10px 0;
+      cursor: pointer;
+      padding: 8px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    .options label:hover {
+      background-color: #f9f9f9;
+    }
+    .options label input[type="radio"] {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      margin-top: 25px;
+      padding: 12px 20px;
+      font-size: 18px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 30px;
+      font-size: 22px;
+      text-align: center;
+      font-weight: bold;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .green { color: #28a745; }
+    .red { color: #dc3545; }
+    #namePrompt {
+      text-align: center;
+      margin-top: 50px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #namePrompt input {
+      padding: 12px;
+      font-size: 18px;
+      width: calc(100% - 24px);
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    #namePrompt button {
+      padding: 12px 25px;
+      font-size: 18px;
+      margin-left: 0;
+      cursor: pointer;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    #namePrompt button:hover {
+      background-color: #218838;
+    }
+    .percentage-display {
+      font-size: 28px;
+      font-weight: bolder;
+      margin: 15px 0;
+      display: block;
+      color: #007bff;
+    }
+    .bold-content {
+      font-weight: bold;
+    }
+    .subject-tag {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .english { background-color: #d4edda; color: #155724; }
+    .urdu { background-color: #cce5ff; color: #004085; }
+    .math { background-color: #fff3cd; color: #856404; }
+    .science { background-color: #f8d7da; color: #721c24; }
+    .social { background-color: #e2e3e5; color: #383d41; }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      .header {
+        font-size: 16px;
+        flex-direction: column;
+        text-align: center;
+      }
+      .center-status {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+      .question {
+        font-size: 18px;
+      }
+      .options label {
+        font-size: 16px;
+      }
+      .btn {
+        font-size: 16px;
+        padding: 10px 15px;
+      }
+      .result {
+        font-size: 18px;
+        padding: 15px;
+      }
+      #namePrompt h2 {
+        font-size: 20px;
+      }
+      #namePrompt input, #namePrompt button {
+        font-size: 16px;
+        padding: 10px;
+      }
+      .percentage-display {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="namePrompt">
+  <h2>Please enter your name to start the Class 7 Quiz</h2>
+  <input type="text" id="userNameInput" placeholder="Enter your name" onkeyup="checkEnter(event)" />
+  <button onclick="startQuiz()">Start Quiz</button>
+</div>
+
+<div id="quizSection" style="display: none;">
+  <div class="header">
+    <div id="qCounter"></div>
+    <div id="timer">⏱️ 00:00:00</div>
+    <div class="center-status">
+      ✅ <span id="right" class="green">0</span> |
+      ❌ <span id="wrong" class="red">0</span>
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <div id="subjectTag" class="subject-tag"></div>
+    <div class="question" id="questionText">Loading...</div>
+    <div class="options" id="optionsContainer"></div>
+    <button class="btn" onclick="nextQuestion()">Next</button>
+  </div>
+
+  <div class="result" id="resultContainer"></div>
+</div>
+
+<script>
+let quizData = [
+  // English Questions (10)
+  {
+    subject: "english",
+    q: "Identify the noun in this sentence: 'The cat chased the mouse.'",
+    o: ["The", "cat", "chased", "mouse"],
+    a: "cat"
+  },
+  {
+    subject: "english",
+    q: "Which of these is a proper noun?",
+    o: ["city", "country", "Karachi", "river"],
+    a: "Karachi"
+  },
+  {
+    subject: "english",
+    q: "Choose the correct past tense of 'run':",
+    o: ["runned", "ran", "runned", "running"],
+    a: "ran"
+  },
+  {
+    subject: "english",
+    q: "What is the plural of 'child'?",
+    o: ["childs", "children", "childes", "child"],
+    a: "children"
+  },
+  {
+    subject: "english",
+    q: "Which word is an adjective in: 'The tall man climbed the steep mountain.'?",
+    o: ["man", "climbed", "tall", "mountain"],
+    a: "tall"
+  },
+  {
+    subject: "english",
+    q: "Choose the correct spelling:",
+    o: ["Accomodate", "Acommodate", "Accommodate", "Acomodate"],
+    a: "Accommodate"
+  },
+  {
+    subject: "english",
+    q: "What is the opposite of 'ancient'?",
+    o: ["old", "historic", "modern", "traditional"],
+    a: "modern"
+  },
+  {
+    subject: "english",
+    q: "Which punctuation mark is used at the end of a question?",
+    o: [".", ",", "!", "?"],
+    a: "?"
+  },
+  {
+    subject: "english",
+    q: "Identify the verb in: 'The birds sing beautifully in the morning.'",
+    o: ["birds", "sing", "beautifully", "morning"],
+    a: "sing"
+  },
+  {
+    subject: "english",
+    q: "Which sentence is correct?",
+    o: ["She don't like apples.", "She doesn't likes apples.", "She doesn't like apples.", "She not like apples."],
+    a: "She doesn't like apples."
+  },
+
+  // Urdu Questions (10)
+  {
+    subject: "urdu",
+    q: "اردو میں 'کتاب' کا جمع کیا ہے؟",
+    o: ["کتابیں", "کتب", "کتابوں", "کتابات"],
+    a: "کتب"
+  },
+  {
+    subject: "urdu",
+    q: "مندرجہ ذیل میں سے فعل کون سا ہے؟",
+    o: ["کھانا", "پانی", "کتاب", "میز"],
+    a: "کھانا"
+  },
+  {
+    subject: "urdu",
+    q: "'صبح' کا متضاد کیا ہے؟",
+    o: ["دوپہر", "شام", "رات", "سہ پہر"],
+    a: "رات"
+  },
+  {
+    subject: "urdu",
+    q: "کون سا لفظ 'پھول' کا مترادف ہے؟",
+    o: ["پتھر", "پانی", "گل", "درخت"],
+    a: "گل"
+  },
+  {
+    subject: "urdu",
+    q: "اردو حروف تہجی میں کل کتنے حروف ہیں؟",
+    o: ["26", "36", "37", "38"],
+    a: "37"
+  },
+  {
+    subject: "urdu",
+    q: "'قومی ترانہ' کس نے لکھا؟",
+    o: ["علامہ اقبال", "حفیظ جالندھری", "فیض احمد فیض", "مرزا غالب"],
+    a: "حفیظ جالندھری"
+  },
+  {
+    subject: "urdu",
+    q: "کون سا لفظ صحیح طور پر ہجے کیا گیا ہے؟",
+    o: ["استاد", "استاذ", "استادھ", "استادہ"],
+    a: "استاد"
+  },
+  {
+    subject: "urdu",
+    q: "مندرجہ ذیل میں سے اسم معرفہ کون سا ہے؟",
+    o: ["لڑکا", "پاکستان", "شہر", "دریا"],
+    a: "پاکستان"
+  },
+  {
+    subject: "urdu",
+    q: "اردو میں 'دوست' کا متضاد کیا ہے؟",
+    o: ["یار", "رفیق", "دشمن", "ساتھی"],
+    a: "دشمن"
+  },
+  {
+    subject: "urdu",
+    q: "'بچہ' کا مؤنث کیا ہے؟",
+    o: ["بچی", "بچے", "بچوں", "بچہ"],
+    a: "بچی"
+  },
+
+  // Mathematics Questions (10)
+  {
+    subject: "math",
+    q: "What is 15% of 200?",
+    o: ["15", "20", "30", "45"],
+    a: "30"
+  },
+  {
+    subject: "math",
+    q: "Solve: 3/4 + 1/2 = ?",
+    o: ["1", "1 1/4", "1 1/2", "2"],
+    a: "1 1/4"
+  },
+  {
+    subject: "math",
+    q: "What is the area of a rectangle with length 8cm and width 5cm?",
+    o: ["13cm²", "26cm²", "40cm²", "45cm²"],
+    a: "40cm²"
+  },
+  {
+    subject: "math",
+    q: "If x + 5 = 12, what is the value of x?",
+    o: ["5", "7", "12", "17"],
+    a: "7"
+  },
+  {
+    subject: "math",
+    q: "How many sides does a hexagon have?",
+    o: ["4", "5", "6", "7"],
+    a: "6"
+  },
+  {
+    subject: "math",
+    q: "What is the next number in the sequence: 2, 4, 8, 16, ___?",
+    o: ["20", "24", "32", "64"],
+    a: "32"
+  },
+  {
+    subject: "math",
+    q: "Convert 0.75 to a fraction:",
+    o: ["1/4", "1/2", "3/4", "4/5"],
+    a: "3/4"
+  },
+  {
+    subject: "math",
+    q: "What is the perimeter of a square with side length 5cm?",
+    o: ["10cm", "15cm", "20cm", "25cm"],
+    a: "20cm"
+  },
+  {
+    subject: "math",
+    q: "How many centimeters are in 1 meter?",
+    o: ["10", "100", "1000", "10000"],
+    a: "100"
+  },
+  {
+    subject: "math",
+    q: "What is 7 × 8?",
+    o: ["48", "54", "56", "64"],
+    a: "56"
+  },
+
+  // Science Questions (10)
+  {
+    subject: "science",
+    q: "Which gas do plants absorb during photosynthesis?",
+    o: ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"],
+    a: "Carbon dioxide"
+  },
+  {
+    subject: "science",
+    q: "What is the largest planet in our solar system?",
+    o: ["Earth", "Mars", "Jupiter", "Saturn"],
+    a: "Jupiter"
+  },
+  {
+    subject: "science",
+    q: "Which of these is NOT a state of matter?",
+    o: ["Solid", "Liquid", "Gas", "Light"],
+    a: "Light"
+  },
+  {
+    subject: "science",
+    q: "What is the process by which plants make their food called?",
+    o: ["Respiration", "Photosynthesis", "Digestion", "Transpiration"],
+    a: "Photosynthesis"
+  },
+  {
+    subject: "science",
+    q: "Which part of the plant absorbs water from the soil?",
+    o: ["Leaves", "Stem", "Roots", "Flowers"],
+    a: "Roots"
+  },
+  {
+    subject: "science",
+    q: "What is the boiling point of water in Celsius?",
+    o: ["50°C", "75°C", "100°C", "120°C"],
+    a: "100°C"
+  },
+  {
+    subject: "science",
+    q: "Which organ pumps blood throughout the body?",
+    o: ["Lungs", "Liver", "Heart", "Brain"],
+    a: "Heart"
+  },
+  {
+    subject: "science",
+    q: "What is the chemical symbol for gold?",
+    o: ["Go", "Gd", "Au", "Ag"],
+    a: "Au"
+  },
+  {
+    subject: "science",
+    q: "Which of these is a renewable energy source?",
+    o: ["Coal", "Natural gas", "Solar power", "Petroleum"],
+    a: "Solar power"
+  },
+  {
+    subject: "science",
+    q: "What is the hardest natural substance on Earth?",
+    o: ["Gold", "Iron", "Diamond", "Quartz"],
+    a: "Diamond"
+  },
+
+  // Social Studies Questions (10)
+  {
+    subject: "social",
+    q: "What is the capital of Pakistan?",
+    o: ["Karachi", "Lahore", "Islamabad", "Peshawar"],
+    a: "Islamabad"
+  },
+  {
+    subject: "social",
+    q: "Who is known as the Father of the Nation in Pakistan?",
+    o: ["Allama Iqbal", "Liaquat Ali Khan", "Quaid-e-Azam Muhammad Ali Jinnah", "Sir Syed Ahmed Khan"],
+    a: "Quaid-e-Azam Muhammad Ali Jinnah"
+  },
+  {
+    subject: "social",
+    q: "When did Pakistan gain independence?",
+    o: ["1940", "1947", "1956", "1965"],
+    a: "1947"
+  },
+  {
+    subject: "social",
+    q: "Which mountain range is located in northern Pakistan?",
+    o: ["Himalayas", "Andes", "Alps", "Rockies"],
+    a: "Himalayas"
+  },
+  {
+    subject: "social",
+    q: "What is the national language of Pakistan?",
+    o: ["English", "Punjabi", "Urdu", "Sindhi"],
+    a: "Urdu"
+  },
+  {
+    subject: "social",
+    q: "Which river is called the lifeline of Pakistan?",
+    o: ["Jhelum", "Chenab", "Indus", "Ravi"],
+    a: "Indus"
+  },
+  {
+    subject: "social",
+    q: "Who wrote the national anthem of Pakistan?",
+    o: ["Allama Iqbal", "Hafeez Jalandhari", "Faiz Ahmed Faiz", "Ahmed Faraz"],
+    a: "Hafeez Jalandhari"
+  },
+  {
+    subject: "social",
+    q: "Which province of Pakistan is the largest by area?",
+    o: ["Punjab", "Sindh", "Khyber Pakhtunkhwa", "Balochistan"],
+    a: "Balochistan"
+  },
+  {
+    subject: "social",
+    q: "What is the national flower of Pakistan?",
+    o: ["Rose", "Jasmine", "Tulip", "Sunflower"],
+    a: "Jasmine"
+  },
+  {
+    subject: "social",
+    q: "Which of these is a UNESCO World Heritage Site in Pakistan?",
+    o: ["Minar-e-Pakistan", "Mohenjo-Daro", "Faisal Mosque", "Badshahi Mosque"],
+    a: "Mohenjo-Daro"
+  }
+];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+shuffle(quizData);
+
+let currentQ = 0;
+let rightAnswers = 0;
+let wrongAnswers = 0;
+let seconds = 0;
+let userName = "";
+let timerInterval;
+
+function startQuiz() {
+  const input = document.getElementById("userNameInput").value.trim();
+  if (input === "") {
+    alert("Please enter your name.");
+    return;
+  }
+  userName = input;
+  document.getElementById("namePrompt").style.display = "none";
+  document.getElementById("quizSection").style.display = "block";
+  loadQuestion();
+  startTimer();
+}
+
+function checkEnter(event) {
+  if (event.key === "Enter") {
+    startQuiz();
+  }
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    seconds++;
+    const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+    const secs = String(seconds % 60).padStart(2, '0');
+    document.getElementById("timer").innerText = `⏱️ ${hrs}:${mins}:${secs}`;
+  }, 1000);
+}
+
+function loadQuestion() {
+  const qData = quizData[currentQ];
+  document.getElementById("qCounter").innerText = `❓ Question ${currentQ + 1} of ${quizData.length}`;
+  document.getElementById("questionText").textContent = qData.q;
+  
+  // Set subject tag
+  const subjectTag = document.getElementById("subjectTag");
+  subjectTag.textContent = qData.subject.toUpperCase();
+  subjectTag.className = "subject-tag " + qData.subject;
+
+  // Render options
+  const optionsHTML = qData.o.map(opt =>
+    `<label><input type="radio" name="option" value="${opt}"> ${opt}</label>`
+  ).join("");
+  document.getElementById("optionsContainer").innerHTML = optionsHTML;
+}
+
+function nextQuestion() {
+  const selected = document.querySelector('input[name="option"]:checked');
+  if (!selected) {
+    alert("Please select an answer!");
+    return;
+  }
+
+  const selectedValue = selected.value;
+  const correctAnswer = quizData[currentQ].a;
+
+  if (selectedValue === correctAnswer) {
+    rightAnswers++;
+  } else {
+    wrongAnswers++;
+  }
+
+  document.getElementById("right").innerText = rightAnswers;
+  document.getElementById("wrong").innerText = wrongAnswers;
+
+  currentQ++;
+  if (currentQ < quizData.length) {
+    loadQuestion();
+  } else {
+    clearInterval(timerInterval);
+    showResult();
+  }
+}
+
+function showResult() {
+  document.querySelector(".quiz-container").style.display = "none";
+  const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+  const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+  const secs = String(seconds % 60).padStart(2, '0');
+
+  const totalQuestions = quizData.length;
+  const percentage = (rightAnswers / totalQuestions) * 100;
+
+  document.getElementById("resultContainer").innerHTML = `
+    👨‍🎓 Student: <strong>${userName}</strong><br><br>
+    ✅ Correct: <span class="green">${rightAnswers}</span> |
+    ❌ Wrong: <span class="red">${wrongAnswers}</span><br>
+    <span class="percentage-display">📊 Percentage: ${percentage.toFixed(2)}%</span><br>
+    🎯 Total Score: ${rightAnswers} / ${quizData.length}<br>
+    ⏱️ Time Taken: ${hrs}:${mins}:${secs}<br><br>
+    <strong>Subject-wise Breakdown:</strong><br>
+    ${getSubjectBreakdown()}
+  `;
+}
+
+function getSubjectBreakdown() {
+  const subjects = {
+    english: { total: 0, correct: 0 },
+    urdu: { total: 0, correct: 0 },
+    math: { total: 0, correct: 0 },
+    science: { total: 0, correct: 0 },
+    social: { total: 0, correct: 0 }
+  };
+
+  // Count total and correct answers per subject
+  quizData.forEach((q, index) => {
+    subjects[q.subject].total++;
+    if (index < currentQ) {
+      const userAnswer = document.querySelector(`input[name="option"][value="${q.a}"]`)?.checked;
+      if (userAnswer) {
+        subjects[q.subject].correct++;
+      }
+    }
+  });
+
+  // Generate HTML for each subject
+  return Object.entries(subjects).map(([subject, data]) => {
+    const percentage = data.total > 0 ? ((data.correct / data.total) * 100).toFixed(2) : 0;
+    return `
+      <div>
+        <span class="subject-tag ${subject}">${subject.toUpperCase()}</span>: 
+        ${data.correct}/${data.total} (${percentage}%)
+      </div>
+    `;
+  }).join("");
+}
+</script>
+
+</body>
+</html>

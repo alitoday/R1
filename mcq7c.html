@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class 7 Quiz - Pakistan</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f0f8ff;
+      line-height: 1.6;
+    }
+    .header, .quiz-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 0 10px; /* Add horizontal padding for smaller screens */
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .center-status {
+      flex: 1 1 100%;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .quiz-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    }
+    .question {
+      font-size: 20px;
+      margin-bottom: 15px; /* Slightly more space */
+      font-weight: bold;
+    }
+    .options label {
+      display: block;
+      margin: 10px 0; /* More vertical space between options */
+      cursor: pointer;
+      padding: 8px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    .options label:hover {
+      background-color: #f9f9f9;
+    }
+    .options label input[type="radio"] {
+      margin-right: 10px;
+      transform: scale(1.2); /* Slightly larger radio buttons */
+    }
+    .options label img {
+      vertical-align: middle;
+      margin-right: 8px;
+      width: 30px;
+      height: 30px;
+    }
+    .btn {
+      display: block; /* Make button full width on smaller screens */
+      width: 100%; /* Full width */
+      margin-top: 25px; /* More space above the button */
+      padding: 12px 20px; /* Larger padding for easier tapping */
+      font-size: 18px; /* Larger font size */
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 30px;
+      font-size: 22px;
+      text-align: center;
+      font-weight: bold;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .green { color: #28a745; } /* Bootstrap success green */
+    .red { color: #dc3545; }   /* Bootstrap danger red */
+    #namePrompt {
+      text-align: center;
+      margin-top: 50px; /* Adjusted for better mobile view */
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      max-width: 500px; /* Limit width for prompt */
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #namePrompt input {
+      padding: 12px;
+      font-size: 18px;
+      width: calc(100% - 24px); /* Account for padding */
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    #namePrompt button {
+      padding: 12px 25px;
+      font-size: 18px;
+      margin-left: 0; /* Remove left margin for better mobile stack */
+      cursor: pointer;
+      background-color: #28a745; /* Green button for start */
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    #namePrompt button:hover {
+      background-color: #218838;
+    }
+    .percentage-display {
+      font-size: 28px;
+      font-weight: bolder;
+      margin: 15px 0;
+      display: block;
+      color: #007bff; /* Highlight percentage */
+    }
+    .bold-content {
+      font-weight: bold;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      .header {
+        font-size: 16px;
+        flex-direction: column; /* Stack header items on small screens */
+        text-align: center;
+      }
+      .center-status {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+      .question {
+        font-size: 18px;
+      }
+      .options label {
+        font-size: 16px;
+      }
+      .btn {
+        font-size: 16px;
+        padding: 10px 15px;
+      }
+      .result {
+        font-size: 18px;
+        padding: 15px;
+      }
+      #namePrompt h2 {
+        font-size: 20px;
+      }
+      #namePrompt input, #namePrompt button {
+        font-size: 16px;
+        padding: 10px;
+      }
+      .percentage-display {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="namePrompt">
+  <h2>Please enter your name to start the Class 7 Quiz</h2>
+  <input type="text" id="userNameInput" placeholder="Enter your name" onkeyup="checkEnter(event)" />
+  <button onclick="startQuiz()">Start Quiz</button>
+</div>
+
+<div id="quizSection" style="display: none;">
+  <div class="header">
+    <div id="qCounter"></div>
+    <div id="timer">⏱️ 00:00:00</div>
+    <div class="center-status">
+      ✅ <span id="right" class="green">0</span> |
+      ❌ <span id="wrong" class="red">0</span>
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <div class="question" id="questionText">Loading...</div>
+    <div class="options" id="optionsContainer"></div>
+    <button class="btn" onclick="nextQuestion()">Next</button>
+  </div>
+
+  <div class="result" id="resultContainer"></div>
+</div>
+
+<script>
+let quizData = [
+  // English (10 questions)
+  { q: "Choose the correct collective noun for 'a group of birds':", o: ["Herd", "Flock", "Pack", "Swarm"], a: "Flock" },
+  { q: "Identify the antonym for 'Ancient':", o: ["Old", "Modern", "Historic", "Antique"], a: "Modern" },
+  { q: "Complete the sentence: 'He is good ______ playing cricket.'", o: ["at", "on", "in", "with"], a: "at" },
+  { q: "Which of the following is a demonstrative pronoun?", o: ["He", "She", "This", "They"], a: "This" },
+  { q: "Choose the correct spelling:", o: ["seperate", "separate", "seporate", "seprate"], a: "separate" },
+  { q: "What is the past tense of 'sing'?", o: ["sung", "sang", "singed", "sings"], a: "sang" },
+  { q: "Identify the adjective in the sentence: 'The blue car is fast.'", o: ["The", "car", "is", "blue"], a: "blue" },
+  { q: "Fill in the blank with the correct preposition: 'The book is ______ the table.'", o: ["in", "on", "under", "over"], a: "on" },
+  { q: "What is a synonym for 'Huge'?", o: ["Small", "Tiny", "Giant", "Little"], a: "Giant" },
+  { q: "Which type of sentence expresses a strong feeling?", o: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], a: "Exclamatory" },
+
+  // Mathematics (10 questions)
+  { q: "What is the value of (2 + 3) x 4?", o: ["9", "14", "20", "24"], a: "20" },
+  { q: "If x + 5 = 12, what is the value of x?", o: ["5", "7", "12", "17"], a: "7" },
+  { q: "What is the area of a square with side length 5 cm?", o: ["10 cm²", "20 cm²", "25 cm²", "30 cm²"], a: "25 cm²" },
+  { q: "Simplify the ratio 15:25.", o: ["3:5", "5:3", "1:5", "5:1"], a: "3:5" },
+  { q: "Convert 0.75 to a percentage.", o: ["7.5%", "75%", "0.75%", "750%"], a: "75%" },
+  { q: "How many sides does a hexagon have?", o: ["4", "5", "6", "7"], a: "6" },
+  { q: "Calculate the average of 10, 20, and 30.", o: ["15", "20", "25", "60"], a: "20" },
+  { q: "What is the next number in the sequence: 2, 4, 6, 8, __?", o: ["9", "10", "11", "12"], a: "10" },
+  { q: "If a shirt costs Rs. 500 and has a 10% discount, what is the new price?", o: ["Rs. 450", "Rs. 490", "Rs. 510", "Rs. 550"], a: "Rs. 450" },
+  { q: "What is the square root of 81?", o: ["7", "8", "9", "10"], a: "9" },
+
+  // Science (10 questions)
+  { q: "Which planet is known as the 'Red Planet'?", o: ["Earth", "Mars", "Jupiter", "Venus"], a: "Mars" },
+  { q: "What is the chemical symbol for oxygen?", o: ["O2", "H2O", "CO2", "N2"], a: "O2" },
+  { q: "Which part of a plant absorbs water and nutrients from the soil?", o: ["Stem", "Leaves", "Flower", "Roots"], a: "Roots" },
+  { q: "What is the process by which water changes from a liquid to a gas?", o: ["Condensation", "Freezing", "Evaporation", "Melting"], a: "Evaporation" },
+  { q: "Which gas do humans breathe out?", o: ["Oxygen", "Nitrogen", "Carbon dioxide", "Hydrogen"], a: "Carbon dioxide" },
+  { q: "What is the main function of the human heart?", o: ["Digestion", "Breathing", "Pumping blood", "Thinking"], a: "Pumping blood" },
+  { q: "Which of these is a conductor of electricity?", o: ["Wood", "Plastic", "Glass", "Copper"], a: "Copper" },
+  { q: "What causes day and night on Earth?", o: ["Earth revolving around the Sun", "Moon revolving around Earth", "Earth rotating on its axis", "Sun rotating on its axis"], a: "Earth rotating on its axis" },
+  { q: "Which force pulls objects towards the center of the Earth?", o: ["Friction", "Magnetism", "Gravity", "Tension"], a: "Gravity" },
+  { q: "What is the function of chlorophyll in plants?", o: ["To give plants color", "To absorb sunlight for photosynthesis", "To protect the plant from insects", "To transport water"], a: "To absorb sunlight for photosynthesis" },
+
+  // Urdu (10 questions)
+  { q: "پاکستان کا قومی پھول کونسا ہے؟", o: ["گلاب", "چنبیلی", "سوسن", "سورج مکھی"], a: "چنبیلی" },
+  { q: "علامہ اقبال کا پورا نام کیا ہے؟", o: ["محمد اقبال", "شیخ محمد اقبال", "سر محمد اقبال", "علامہ محمد اقبال"], a: "سر محمد اقبال" },
+  { q: "اردو زبان کا پہلا شاعر کون تھا؟", o: ["میر تقی میر", "غالب", "امیر خسرو", "فیض احمد فیض"], a: "امیر خسرو" },
+  { q: "اسم معرفہ کی کتنی اقسام ہیں؟", o: ["تین", "چار", "پانچ", "چھ"], a: "چار" },
+  { q: "اردو گرامر میں 'فاعل' کسے کہتے ہیں؟", o: ["کام کرنے والا", "جس پر کام ہو", "کام", "حرف"], a: "کام کرنے والا" },
+  { q: "پاکستان کا قومی کھیل کونسا ہے؟", o: ["کرکٹ", "فٹ بال", "ہاکی", "باسکٹ بال"], a: "ہاکی" },
+  { q: "اردو حروف تہجی میں کل کتنے حروف ہیں؟", o: ["28", "32", "36", "38"], a: "38" },
+  { q: "ضرب المثل 'اونٹ کے منہ میں زیرہ' کا کیا مطلب ہے؟", o: ["بہت کم چیز", "بہت زیادہ چیز", "اچھی چیز", "بری چیز"], a: "بہت کم چیز" },
+  { q: "پاکستان کا قومی ترانہ کس نے لکھا؟", o: ["فیض احمد فیض", "احمد ندیم قاسمی", "حفیظ جالندھری", "علامہ اقبال"], a: "حفیظ جالندھری" },
+  { q: "واحد سے جمع بنائیے: 'کتاب'", o: ["کتابیں", "کتابوں", "کتابات", "کتابچہ"], a: "کتابیں" },
+
+  // Pakistan Studies / General Knowledge about Pakistan (10 questions)
+  { q: "When did Pakistan gain independence?", o: ["14 August 1947", "23 March 1940", "6 September 1965", "25 December 1876"], a: "14 August 1947" },
+  { q: "Who was the founder of Pakistan?", o: ["Allama Iqbal", "Liaquat Ali Khan", "Muhammad Ali Jinnah", "Fatima Jinnah"], a: "Muhammad Ali Jinnah" },
+  { q: "What is the capital city of Pakistan?", o: ["Karachi", "Lahore", "Islamabad", "Peshawar"], a: "Islamabad" },
+  { q: "Which mountain range is located in northern Pakistan and includes K2?", o: ["Himalayas", "Karakoram", "Hindu Kush", "Pamir"], a: "Karakoram" },
+  { q: "What is the national animal of Pakistan?", o: ["Tiger", "Lion", "Markhor", "Snow Leopard"], a: "Markhor" },
+  { q: "How many provinces are there in Pakistan (excluding territories)?", o: ["3", "4", "5", "6"], a: "4" },
+  { q: "The Indus River flows through which country primarily?", o: ["India", "Afghanistan", "China", "Pakistan"], a: "Pakistan" },
+  { q: "Which major port city is located on the coast of the Arabian Sea in Pakistan?", o: ["Lahore", "Faisalabad", "Karachi", "Quetta"], a: "Karachi" },
+  { q: "What is the national language of Pakistan?", o: ["Punjabi", "Sindhi", "Urdu", "Pashto"], a: "Urdu" },
+  { q: "Who designed the national flag of Pakistan?", o: ["Allama Iqbal", "Muhammad Ali Jinnah", "Amiruddin Kidwai", "Liaquat Ali Khan"], a: "Amiruddin Kidwai" }
+];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+shuffle(quizData);
+
+let currentQ = 0;
+let rightAnswers = 0;
+let wrongAnswers = 0;
+let seconds = 0;
+let userName = "";
+let timerInterval;
+
+function startQuiz() {
+  const input = document.getElementById("userNameInput").value.trim();
+  if (input === "") {
+    alert("Please enter your name.");
+    return;
+  }
+  userName = input;
+  document.getElementById("namePrompt").style.display = "none";
+  document.getElementById("quizSection").style.display = "block";
+  loadQuestion();
+  startTimer();
+}
+
+// Function to handle Enter key press
+function checkEnter(event) {
+  if (event.key === "Enter") {
+    startQuiz();
+  }
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    seconds++;
+    const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+    const secs = String(seconds % 60).padStart(2, '0');
+    document.getElementById("timer").innerText = `⏱️ ${hrs}:${mins}:${secs}`;
+  }, 1000);
+}
+
+function loadQuestion() {
+  const qData = quizData[currentQ];
+  document.getElementById("qCounter").innerText = `❓ Question ${currentQ + 1} of ${quizData.length}`;
+  document.getElementById("questionText").innerHTML = qData.q;
+
+  const optionsHTML = qData.o.map(opt =>
+    `<label><input type="radio" name="option" value="${opt}"> ${opt}</label>`
+  ).join("");
+  document.getElementById("optionsContainer").innerHTML = optionsHTML;
+}
+
+function nextQuestion() {
+  const selected = document.querySelector('input[name="option"]:checked');
+  if (!selected) {
+    alert("Please select an answer!");
+    return;
+  }
+
+  // A more robust way to clean HTML tags and emojis for comparison
+  const cleanString = (str) => str.replace(/<[^>]*>/g, '').replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}]/gu, '').trim();
+
+  const selectedValueClean = cleanString(selected.value);
+  const correctAnswerClean = cleanString(quizData[currentQ].a);
+
+  if (selectedValueClean === correctAnswerClean) {
+    rightAnswers++;
+  } else {
+    wrongAnswers++;
+  }
+
+  document.getElementById("right").innerText = rightAnswers;
+  document.getElementById("wrong").innerText = wrongAnswers;
+
+  currentQ++;
+  if (currentQ < quizData.length) {
+    loadQuestion();
+  } else {
+    clearInterval(timerInterval);
+    showResult();
+  }
+}
+
+function showResult() {
+  document.querySelector(".quiz-container").style.display = "none";
+  const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+  const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+  const secs = String(seconds % 60).padStart(2, '0');
+
+  const totalQuestions = quizData.length;
+  const percentage = (rightAnswers / totalQuestions) * 100;
+
+  document.getElementById("resultContainer").innerHTML = `
+    👦 Student: <strong>${userName}</strong><br><br>
+    ✅ Correct: <span class="green">${rightAnswers}</span> |
+    ❌ Wrong: <span class="red">${wrongAnswers}</span><br>
+    <span class="percentage-display">📊 Percentage: ${percentage.toFixed(2)}%</span><br>
+    🎯 Total Score: ${rightAnswers} / ${quizData.length}<br>
+    ⏱️ Time Taken: ${hrs}:${mins}:${secs}
+  `;
+}
+</script>
+
+</body>
+</html>

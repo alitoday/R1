@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MDCAT Practice Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f0f8ff;
+      line-height: 1.6;
+    }
+    .header, .quiz-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 0 10px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .center-status {
+      flex: 1 1 100%;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .quiz-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .question {
+      font-size: 20px;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+    .options label {
+      display: block;
+      margin: 10px 0;
+      cursor: pointer;
+      padding: 8px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    .options label:hover {
+      background-color: #f9f9f9;
+    }
+    .options label input[type="radio"] {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      margin-top: 25px;
+      padding: 12px 20px;
+      font-size: 18px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 30px;
+      font-size: 22px;
+      text-align: center;
+      font-weight: bold;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .green { color: #28a745; }
+    .red { color: #dc3545; }
+    #namePrompt {
+      text-align: center;
+      margin-top: 50px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #namePrompt input {
+      padding: 12px;
+      font-size: 18px;
+      width: calc(100% - 24px);
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    #namePrompt button {
+      padding: 12px 25px;
+      font-size: 18px;
+      cursor: pointer;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    #namePrompt button:hover {
+      background-color: #218838;
+    }
+    .percentage-display {
+      font-size: 28px;
+      font-weight: bolder;
+      margin: 15px 0;
+      display: block;
+      color: #007bff;
+    }
+    .bold-content {
+      font-weight: bold;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      .header {
+        font-size: 16px;
+        flex-direction: column;
+        text-align: center;
+      }
+      .center-status {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+      .question {
+        font-size: 18px;
+      }
+      .options label {
+        font-size: 16px;
+      }
+      .btn {
+        font-size: 16px;
+        padding: 10px 15px;
+      }
+      .result {
+        font-size: 18px;
+        padding: 15px;
+      }
+      #namePrompt h2 {
+        font-size: 20px;
+      }
+      #namePrompt input, #namePrompt button {
+        font-size: 16px;
+        padding: 10px;
+      }
+      .percentage-display {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div id="namePrompt">
+  <h2>Please enter your name to start the MDCAT quiz</h2>
+  <input type="text" id="userNameInput" placeholder="Enter your name" onkeyup="checkEnter(event)" />
+  <button onclick="startQuiz()">Start Quiz</button>
+</div>
+<div id="quizSection" style="display: none;">
+  <div class="header">
+    <div id="qCounter"></div>
+    <div id="timer">⏱️ 00:00:00</div>
+    <div class="center-status">
+      ✅ <span id="right" class="green">0</span> |
+      ❌ <span id="wrong" class="red">0</span>
+    </div>
+  </div>
+  <div class="quiz-container">
+    <div class="question" id="questionText">Loading...</div>
+    <div class="options" id="optionsContainer"></div>
+    <button class="btn" onclick="nextQuestion()">Next</button>
+  </div>
+  <div class="result" id="resultContainer"></div>
+</div>
+<script>
+let quizData = [
+  // Biology
+  { q: "Which of the following is NOT a part of DNA?", o: ["Adenine", "Uracil", "Thymine", "Cytosine"], a: "Uracil" },
+  { q: "What is the function of ribosomes?", o: ["Protein synthesis", "Lipid synthesis", "Energy production", "DNA replication"], a: "Protein synthesis" },
+  { q: "Which enzyme digests proteins in the stomach?", o: ["Amylase", "Pepsin", "Trypsin", "Lipase"], a: "Pepsin" },
+  { q: "Which blood group can receive blood from all donors?", o: ["A", "B", "AB", "O"], a: "AB" },
+  { q: "The process by which plants make food is called:", o: ["Respiration", "Photosynthesis", "Transpiration", "Digestion"], a: "Photosynthesis" },
+
+  // Chemistry
+  { q: "What is the atomic number of Oxygen?", o: ["6", "7", "8", "9"], a: "8" },
+  { q: "Which gas is most abundant in Earth's atmosphere?", o: ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"], a: "Nitrogen" },
+  { q: "What is the chemical formula of water?", o: ["H₂O₂", "HO", "H₂O", "HO₂"], a: "H₂O" },
+  { q: "Which of these elements is a noble gas?", o: ["Hydrogen", "Helium", "Oxygen", "Nitrogen"], a: "Helium" },
+  { q: "What is the pH of pure water at 25°C?", o: ["5", "6", "7", "8"], a: "7" },
+
+  // Physics
+  { q: "What is the SI unit of force?", o: ["Watt", "Joule", "Newton", "Volt"], a: "Newton" },
+  { q: "Which law states that every action has an equal and opposite reaction?", o: ["1st Law", "2nd Law", "3rd Law", "Law of Gravitation"], a: "3rd Law" },
+  { q: "What is the speed of light in vacuum?", o: ["3x10⁶ m/s", "3x10⁷ m/s", "3x10⁸ m/s", "3x10⁹ m/s"], a: "3x10⁸ m/s" },
+  { q: "Which instrument measures electric current?", o: ["Voltmeter", "Ammeter", "Barometer", "Galvanometer"], a: "Ammeter" },
+  { q: "Which of the following is a scalar quantity?", o: ["Velocity", "Acceleration", "Force", "Mass"], a: "Mass" },
+
+  // English & Verbal
+  { q: "Choose the correct synonym of 'happy'.", o: ["Sad", "Angry", "Joyful", "Tired"], a: "Joyful" },
+  { q: "Antonym of 'expand' is:", o: ["Extend", "Enlarge", "Contract", "Grow"], a: "Contract" },
+  { q: "He ___ to school every day.", o: ["go", "going", "goes", "gone"], a: "goes" },
+  { q: "She has been studying ___ 3 hours.", o: ["for", "since", "by", "at"], a: "for" },
+  { q: "Which sentence is grammatically correct?", o: ["He don't like apples.", "He doesn't likes apples.", "He doesn't like apples.", "He not likes apples."], a: "He doesn't like apples." },
+
+  // Additional Questions (25 more)
+  { q: "Which part of the cell contains genetic material?", o: ["Cell membrane", "Cytoplasm", "Nucleus", "Mitochondria"], a: "Nucleus" },
+  { q: "What is the IUPAC name of CH₃COOH?", o: ["Ethanol", "Acetic acid", "Methanoic acid", "Ethanoic acid"], a: "Ethanoic acid" },
+  { q: "Which vitamin is synthesized by the skin upon exposure to sunlight?", o: ["Vitamin A", "Vitamin B", "Vitamin C", "Vitamin D"], a: "Vitamin D" },
+  { q: "Which of the following is a renewable energy source?", o: ["Coal", "Natural Gas", "Solar Energy", "Petroleum"], a: "Solar Energy" },
+  { q: "The SI unit of electric charge is:", o: ["Ampere", "Ohm", "Coulomb", "Volt"], a: "Coulomb" },
+  { q: "Which one is a vector quantity?", o: ["Time", "Distance", "Speed", "Velocity"], a: "Velocity" },
+  { q: "What is the oxidation state of oxygen in O₂?", o: ["+2", "-2", "+1", "0"], a: "0" },
+  { q: "The bond between two amino acids is:", o: ["Ionic", "Covalent", "Peptide", "Hydrogen"], a: "Peptide" },
+  { q: "Which organ filters blood in the human body?", o: ["Heart", "Liver", "Kidney", "Stomach"], a: "Kidney" },
+  { q: "What is the boiling point of water at standard pressure?", o: ["90°C", "100°C", "110°C", "120°C"], a: "100°C" },
+  { q: "Which hormone controls blood sugar levels?", o: ["Insulin", "Thyroxine", "Estrogen", "Testosterone"], a: "Insulin" },
+  { q: "What is the full form of DNA?", o: ["Deoxyribonucleic Acid", "Dioxyribonucleic Acid", "Deoxyriboneutric Acid", "Dioxyriboneutric Acid"], a: "Deoxyribonucleic Acid" },
+  { q: "What is the gravitational acceleration on Earth?", o: ["9.6 m/s²", "9.8 m/s²", "10.0 m/s²", "10.2 m/s²"], a: "9.8 m/s²" },
+  { q: "Which element has the highest electronegativity?", o: ["Fluorine", "Chlorine", "Oxygen", "Nitrogen"], a: "Fluorine" },
+  { q: "Which part of the brain controls balance?", o: ["Cerebrum", "Cerebellum", "Medulla", "Hypothalamus"], a: "Cerebellum" }
+];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+shuffle(quizData);
+
+let currentQ = 0;
+let rightAnswers = 0;
+let wrongAnswers = 0;
+let seconds = 0;
+let userName = "";
+let timerInterval;
+
+function startQuiz() {
+  const input = document.getElementById("userNameInput").value.trim();
+  if (input === "") {
+    alert("Please enter your name.");
+    return;
+  }
+  userName = input;
+  document.getElementById("namePrompt").style.display = "none";
+  document.getElementById("quizSection").style.display = "block";
+  loadQuestion();
+  startTimer();
+}
+
+function checkEnter(event) {
+  if (event.key === "Enter") {
+    startQuiz();
+  }
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    seconds++;
+    const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+    const secs = String(seconds % 60).padStart(2, '0');
+    document.getElementById("timer").innerText = `⏱️ ${hrs}:${mins}:${secs}`;
+  }, 1000);
+}
+
+function loadQuestion() {
+  const qData = quizData[currentQ];
+  document.getElementById("qCounter").innerText = `❓ Question ${currentQ + 1} of ${quizData.length}`;
+  document.getElementById("questionText").innerHTML = qData.q;
+  const optionsHTML = qData.o.map(opt =>
+    `<label><input type="radio" name="option" value="${opt}"> ${opt}</label>`
+  ).join("");
+  document.getElementById("optionsContainer").innerHTML = optionsHTML;
+}
+
+function nextQuestion() {
+  const selected = document.querySelector('input[name="option"]:checked');
+  if (!selected) {
+    alert("Please select an answer!");
+    return;
+  }
+
+  const cleanString = (str) => str.replace(/<[^>]*>/g, '').replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}]/gu, '').trim();
+  const selectedValueClean = cleanString(selected.value);
+  const correctAnswerClean = cleanString(quizData[currentQ].a);
+
+  if (selectedValueClean === correctAnswerClean) {
+    rightAnswers++;
+  } else {
+    wrongAnswers++;
+  }
+
+  document.getElementById("right").innerText = rightAnswers;
+  document.getElementById("wrong").innerText = wrongAnswers;
+
+  currentQ++;
+  if (currentQ < quizData.length) {
+    loadQuestion();
+  } else {
+    clearInterval(timerInterval);
+    showResult();
+  }
+}
+
+function showResult() {
+  document.querySelector(".quiz-container").style.display = "none";
+  const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+  const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+  const secs = String(seconds % 60).padStart(2, '0');
+  const totalQuestions = quizData.length;
+  const percentage = (rightAnswers / totalQuestions) * 100;
+
+  document.getElementById("resultContainer").innerHTML = `
+    👦 Student: <strong>${userName}</strong><br><br>
+    ✅ Correct: <span class="green">${rightAnswers}</span> |
+    ❌ Wrong: <span class="red">${wrongAnswers}</span><br>
+    <span class="percentage-display">📊 Percentage: ${percentage.toFixed(2)}%</span><br>
+    ⏱️ Time Taken: ${hrs}:${mins}:${secs}<br>
+    🎯 Total Score: ${rightAnswers} / ${quizData.length}
+  `;
+}
+</script>
+</body>
+</html>

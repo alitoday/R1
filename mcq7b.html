@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class 7 Pakistan Curriculum Quiz</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    .header, .quiz-container {
+      max-width: 900px;
+      margin: auto;
+      padding: 0 10px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: white;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      padding: 15px 20px;
+      border-radius: 15px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .center-status {
+      flex: 1 1 100%;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .quiz-container {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .question {
+      font-size: 18px;
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: #2c3e50;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border-left: 4px solid #3498db;
+    }
+    .subject-tag {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: white;
+    }
+    .mathematics { background: #e74c3c; }
+    .science { background: #27ae60; }
+    .english { background: #3498db; }
+    .urdu { background: #e67e22; }
+    .pakistan-studies { background: #9b59b6; }
+    .islamiyat { background: #1abc9c; }
+    
+    .options label {
+      display: block;
+      margin: 12px 0;
+      cursor: pointer;
+      padding: 12px 15px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      background: #fff;
+    }
+    .options label:hover {
+      background: #f8f9fa;
+      border-color: #3498db;
+      transform: translateX(5px);
+    }
+    .options label input[type="radio"] {
+      margin-right: 12px;
+      transform: scale(1.3);
+      accent-color: #3498db;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      margin-top: 30px;
+      padding: 15px 25px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .btn:hover {
+      background: linear-gradient(135deg, #2980b9, #1f638a);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(52,152,219,0.3);
+    }
+    .result {
+      margin-top: 30px;
+      font-size: 20px;
+      text-align: center;
+      font-weight: bold;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .green { color: #27ae60; }
+    .red { color: #e74c3c; }
+    .blue { color: #3498db; }
+    
+    #namePrompt {
+      text-align: center;
+      margin-top: 50px;
+      padding: 40px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    #namePrompt h2 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+    #namePrompt input {
+      padding: 15px;
+      font-size: 16px;
+      width: calc(100% - 30px);
+      margin-bottom: 20px;
+      border: 2px solid #bdc3c7;
+      border-radius: 10px;
+      transition: border-color 0.3s ease;
+    }
+    #namePrompt input:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+    #namePrompt button {
+      padding: 15px 30px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, #27ae60, #229954);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    #namePrompt button:hover {
+      background: linear-gradient(135deg, #229954, #1e8449);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(39,174,96,0.3);
+    }
+    .percentage-display {
+      font-size: 32px;
+      font-weight: bolder;
+      margin: 20px 0;
+      display: block;
+      background: linear-gradient(135deg, #3498db, #9b59b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      .header {
+        font-size: 16px;
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+      }
+      .quiz-container {
+        padding: 20px;
+      }
+      .question {
+        font-size: 16px;
+        padding: 12px;
+      }
+      .options label {
+        font-size: 14px;
+        padding: 10px;
+      }
+      .btn {
+        font-size: 16px;
+        padding: 12px 20px;
+      }
+      .result {
+        font-size: 16px;
+        padding: 20px;
+      }
+      #namePrompt {
+        padding: 25px;
+        margin-top: 30px;
+      }
+      #namePrompt h2 {
+        font-size: 20px;
+      }
+      .percentage-display {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="namePrompt">
+  <h2>📚 Class 7 Pakistan Quiz</h2>
+  <p>Test your knowledge with 50 questions covering Mathematics, Science, English, Urdu, Pakistan Studies, and Islamiyat</p>
+  <input type="text" id="userNameInput" placeholder="اپنا نام لکھیں / Enter your name" onkeyup="checkEnter(event)" />
+  <button onclick="startQuiz()">Start Quiz / شروع کریں</button>
+</div>
+
+<div id="quizSection" style="display: none;">
+  <div class="header">
+    <div id="qCounter"></div>
+    <div id="timer">⏱️ 00:00:00</div>
+    <div class="center-status">
+      ✅ <span id="right" class="green">0</span> |
+      ❌ <span id="wrong" class="red">0</span>
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <div id="subjectTag" class="subject-tag"></div>
+    <div class="question" id="questionText">Loading...</div>
+    <div class="options" id="optionsContainer"></div>
+    <button class="btn" onclick="nextQuestion()">Next Question</button>
+  </div>
+
+  <div class="result" id="resultContainer"></div>
+</div>
+
+<script>
+let quizData = [
+  // Mathematics Questions (10 questions)
+  { q: "What is 15 × 8?", o: ["110", "120", "130", "140"], a: "120", s: "mathematics" },
+  { q: "What is the area of a rectangle with length 12 cm and width 8 cm?", o: ["96 cm²", "86 cm²", "106 cm²", "76 cm²"], a: "96 cm²", s: "mathematics" },
+  { q: "What is 25% of 200?", o: ["40", "50", "60", "75"], a: "50", s: "mathematics" },
+  { q: "If a circle has a radius of 7 cm, what is its diameter?", o: ["12 cm", "14 cm", "16 cm", "18 cm"], a: "14 cm", s: "mathematics" },
+  { q: "What is the value of 3⁴?", o: ["12", "64", "81", "96"], a: "81", s: "mathematics" },
+  { q: "Solve: 45 ÷ 9 + 3 × 4", o: ["15", "17", "19", "21"], a: "17", s: "mathematics" },
+  { q: "What is the LCM of 12 and 18?", o: ["24", "36", "48", "54"], a: "36", s: "mathematics" },
+  { q: "If x + 15 = 23, what is the value of x?", o: ["6", "7", "8", "9"], a: "8", s: "mathematics" },
+  { q: "What is the perimeter of a square with side 9 cm?", o: ["32 cm", "34 cm", "36 cm", "38 cm"], a: "36 cm", s: "mathematics" },
+  { q: "Convert 3/4 to a decimal:", o: ["0.65", "0.70", "0.75", "0.80"], a: "0.75", s: "mathematics" },
+
+  // Science Questions (10 questions)
+  { q: "What is the process by which plants make their own food?", o: ["Respiration", "Photosynthesis", "Digestion", "Excretion"], a: "Photosynthesis", s: "science" },
+  { q: "Which planet is closest to the sun?", o: ["Venus", "Earth", "Mercury", "Mars"], a: "Mercury", s: "science" },
+  { q: "What gas do plants release during photosynthesis?", o: ["Carbon dioxide", "Nitrogen", "Oxygen", "Hydrogen"], a: "Oxygen", s: "science" },
+  { q: "Which organ pumps blood in the human body?", o: ["Liver", "Heart", "Kidneys", "Lungs"], a: "Heart", s: "science" },
+  { q: "What is the hardest natural substance?", o: ["Gold", "Iron", "Diamond", "Silver"], a: "Diamond", s: "science" },
+  { q: "How many chambers does a human heart have?", o: ["2", "3", "4", "5"], a: "4", s: "science" },
+  { q: "What is the main source of energy for Earth?", o: ["Moon", "Stars", "Sun", "Wind"], a: "Sun", s: "science" },
+  { q: "Which force pulls objects toward the Earth?", o: ["Magnetic force", "Gravity", "Friction", "Tension"], a: "Gravity", s: "science" },
+  { q: "What is the boiling point of water?", o: ["90°C", "100°C", "110°C", "120°C"], a: "100°C", s: "science" },
+  { q: "Which animal is known as the ship of the desert?", o: ["Horse", "Elephant", "Camel", "Donkey"], a: "Camel", s: "science" },
+
+  // English Questions (8 questions)
+  { q: "Choose the correct spelling:", o: ["Recieve", "Receive", "Receve", "Receave"], a: "Receive", s: "english" },
+  { q: "What is the plural of 'child'?", o: ["Childs", "Children", "Childes", "Childrens"], a: "Children", s: "english" },
+  { q: "Choose the synonym of 'happy':", o: ["Sad", "Joyful", "Angry", "Tired"], a: "Joyful", s: "english" },
+  { q: "What type of sentence asks a question?", o: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], a: "Interrogative", s: "english" },
+  { q: "Choose the correct sentence:", o: ["She don't like tea", "She doesn't like tea", "She not like tea", "She no like tea"], a: "She doesn't like tea", s: "english" },
+  { q: "What is the past tense of 'run'?", o: ["Runned", "Ran", "Running", "Runs"], a: "Ran", s: "english" },
+  { q: "Choose the antonym of 'hot':", o: ["Warm", "Cool", "Cold", "Mild"], a: "Cold", s: "english" },
+  { q: "Which word is a noun?", o: ["Beautiful", "Quickly", "Book", "Running"], a: "Book", s: "english" },
+
+  // Urdu Questions (7 questions)
+  { q: "اردو زبان کا بانی کون ہے؟", o: ["میر تقی میر", "غالب", "امیر خسرو", "اقبال"], a: "امیر خسرو", s: "urdu" },
+  { q: "'کتاب' کا جمع کیا ہے؟", o: ["کتابیں", "کتابوں", "کتابات", "کتب"], a: "کتب", s: "urdu" },
+  { q: "'سورج' کا مترادف کیا ہے؟", o: ["چاند", "آفتاب", "ستارہ", "بادل"], a: "آفتاب", s: "urdu" },
+  { q: "اردو کا قومی شاعر کون ہے؟", o: ["غالب", "اقبال", "میر", "فیض"], a: "اقبال", s: "urdu" },
+  { q: "'محنت' کا متضاد کیا ہے؟", o: ["کام", "سستی", "مشقت", "کوشش"], a: "سستی", s: "urdu" },
+  { q: "پاکستان کی قومی زبان کیا ہے؟", o: ["انگریزی", "پنجابی", "اردو", "سندھی"], a: "اردو", s: "urdu" },
+  { q: "'بارش' کا مترادف لفظ کون سا ہے؟", o: ["پانی", "بادل", "قطرہ", "مینہ"], a: "مینہ", s: "urdu" },
+
+  // Pakistan Studies Questions (8 questions)
+  { q: "Pakistan was created in which year?", o: ["1945", "1946", "1947", "1948"], a: "1947", s: "pakistan-studies" },
+  { q: "Who is known as the Father of the Nation in Pakistan?", o: ["Allama Iqbal", "Quaid-e-Azam", "Liaquat Ali Khan", "Sir Syed"], a: "Quaid-e-Azam", s: "pakistan-studies" },
+  { q: "What is the capital of Pakistan?", o: ["Karachi", "Lahore", "Islamabad", "Peshawar"], a: "Islamabad", s: "pakistan-studies" },
+  { q: "Which river is called the lifeline of Pakistan?", o: ["Chenab", "Ravi", "Indus", "Jhelum"], a: "Indus", s: "pakistan-studies" },
+  { q: "Pakistan's national flower is:", o: ["Rose", "Jasmine", "Sunflower", "Lotus"], a: "Jasmine", s: "pakistan-studies" },
+  { q: "How many provinces does Pakistan have?", o: ["3", "4", "5", "6"], a: "4", s: "pakistan-studies" },
+  { q: "What is Pakistan's national sport?", o: ["Cricket", "Hockey", "Football", "Kabaddi"], a: "Hockey", s: "pakistan-studies" },
+  { q: "Pakistan's largest city by population is:", o: ["Lahore", "Karachi", "Islamabad", "Faisalabad"], a: "Karachi", s: "pakistan-studies" },
+
+  // Islamiyat Questions (7 questions)
+  { q: "How many pillars of Islam are there?", o: ["4", "5", "6", "7"], a: "5", s: "islamiyat" },
+  { q: "What is the first pillar of Islam?", o: ["Salah", "Zakat", "Kalima", "Hajj"], a: "Kalima", s: "islamiyat" },
+  { q: "How many times do Muslims pray in a day?", o: ["3", "4", "5", "6"], a: "5", s: "islamiyat" },
+  { q: "In which month do Muslims fast?", o: ["Rajab", "Shaban", "Ramadan", "Shawwal"], a: "Ramadan", s: "islamiyat" },
+  { q: "What is the holy book of Muslims?", o: ["Torah", "Bible", "Quran", "Zabur"], a: "Quran", s: "islamiyat" },
+  { q: "Who was the last Prophet of Islam?", o: ["Hazrat Isa (AS)", "Hazrat Musa (AS)", "Hazrat Muhammad (SAW)", "Hazrat Ibrahim (AS)"], a: "Hazrat Muhammad (SAW)", s: "islamiyat" },
+  { q: "What percentage of wealth is given as Zakat?", o: ["2%", "2.5%", "3%", "5%"], a: "2.5%", s: "islamiyat" }
+];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+shuffle(quizData);
+
+let currentQ = 0;
+let rightAnswers = 0;
+let wrongAnswers = 0;
+let seconds = 0;
+let userName = "";
+let timerInterval;
+
+function startQuiz() {
+  const input = document.getElementById("userNameInput").value.trim();
+  if (input === "") {
+    alert("Please enter your name / براہ کرم اپنا نام لکھیں");
+    return;
+  }
+  userName = input;
+  document.getElementById("namePrompt").style.display = "none";
+  document.getElementById("quizSection").style.display = "block";
+  loadQuestion();
+  startTimer();
+}
+
+function checkEnter(event) {
+  if (event.key === "Enter") {
+    startQuiz();
+  }
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    seconds++;
+    const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+    const secs = String(seconds % 60).padStart(2, '0');
+    document.getElementById("timer").innerText = `⏱️ ${hrs}:${mins}:${secs}`;
+  }, 1000);
+}
+
+function loadQuestion() {
+  const qData = quizData[currentQ];
+  document.getElementById("qCounter").innerText = `❓ Question ${currentQ + 1} of ${quizData.length}`;
+  
+  // Set subject tag
+  const subjectTag = document.getElementById("subjectTag");
+  const subjectNames = {
+    'mathematics': 'MATHEMATICS',
+    'science': 'SCIENCE', 
+    'english': 'ENGLISH',
+    'urdu': 'URDU',
+    'pakistan-studies': 'PAKISTAN STUDIES',
+    'islamiyat': 'ISLAMIYAT'
+  };
+  subjectTag.innerText = subjectNames[qData.s];
+  subjectTag.className = `subject-tag ${qData.s}`;
+  
+  document.getElementById("questionText").innerHTML = qData.q;
+
+  const optionsHTML = qData.o.map(opt =>
+    `<label><input type="radio" name="option" value="${opt}"> ${opt}</label>`
+  ).join("");
+  document.getElementById("optionsContainer").innerHTML = optionsHTML;
+}
+
+function nextQuestion() {
+  const selected = document.querySelector('input[name="option"]:checked');
+  if (!selected) {
+    alert("Please select an answer! / جواب منتخب کریں!");
+    return;
+  }
+
+  if (selected.value === quizData[currentQ].a) {
+    rightAnswers++;
+  } else {
+    wrongAnswers++;
+  }
+
+  document.getElementById("right").innerText = rightAnswers;
+  document.getElementById("wrong").innerText = wrongAnswers;
+
+  currentQ++;
+  if (currentQ < quizData.length) {
+    loadQuestion();
+  } else {
+    clearInterval(timerInterval);
+    showResult();
+  }
+}
+
+function showResult() {
+  document.querySelector(".quiz-container").style.display = "none";
+  const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+  const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+  const secs = String(seconds % 60).padStart(2, '0');
+
+  const totalQuestions = quizData.length;
+  const percentage = (rightAnswers / totalQuestions) * 100;
+
+  let grade = "";
+  let gradeColor = "";
+  let message = "";
+  
+  if (percentage >= 90) { 
+    grade = "A+"; 
+    gradeColor = "green"; 
+    message = "Outstanding! بہترین!";
+  }
+  else if (percentage >= 80) { 
+    grade = "A"; 
+    gradeColor = "green"; 
+    message = "Excellent! عمدہ!";
+  }
+  else if (percentage >= 70) { 
+    grade = "B"; 
+    gradeColor = "blue"; 
+    message = "Good! اچھا!";
+  }
+  else if (percentage >= 60) { 
+    grade = "C"; 
+    gradeColor = "orange"; 
+    message = "Fair! ٹھیک ہے!";
+  }
+  else { 
+    grade = "F"; 
+    gradeColor = "red"; 
+    message = "Keep trying! کوشش جاری رکھیں!";
+  }
+
+  document.getElementById("resultContainer").innerHTML = `
+    <h2>🎉 Quiz Completed! / مکمل!</h2>
+    👨‍🎓 <strong>Student / طالب علم:</strong> ${userName}<br><br>
+    ✅ <span class="green">Correct / صحیح: ${rightAnswers}</span> |
+    ❌ <span class="red">Wrong / غلط: ${wrongAnswers}</span><br>
+    <span class="percentage-display">📊 ${percentage.toFixed(1)}%</span><br>
+    🎯 <strong>Grade / گریڈ: <span style="color: ${gradeColor}; font-size: 24px;">${grade}</span></strong><br>
+    💬 <strong>${message}</strong><br>
+    📝 Total Score / کل نمبر: ${rightAnswers} / ${totalQuestions}<br>
+    ⏱️ Time Taken / وقت: ${hrs}:${mins}:${secs}<br><br>
+    <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+      <strong>Subjects Covered / مضامین:</strong><br>
+      🔢 Mathematics | 🔬 Science | 📖 English<br>
+      📚 Urdu | 🏛️ Pakistan Studies | ☪️ Islamiyat
+    </div>
+  `;
+}
+</script>
+
+</body>
+</html>

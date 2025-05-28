@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Class 7 Quiz - Pakistan Curriculum</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f0f8ff;
+      line-height: 1.6;
+    }
+    .header, .quiz-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 0 10px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .center-status {
+      flex: 1 1 100%;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .quiz-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .question {
+      font-size: 20px;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+    .options label {
+      display: block;
+      margin: 10px 0;
+      cursor: pointer;
+      padding: 8px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    .options label:hover {
+      background-color: #f9f9f9;
+    }
+    .options label input[type="radio"] {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      margin-top: 25px;
+      padding: 12px 20px;
+      font-size: 18px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 30px;
+      font-size: 22px;
+      text-align: center;
+      font-weight: bold;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .green { color: #28a745; }
+    .red { color: #dc3545; }
+    #namePrompt {
+      text-align: center;
+      margin-top: 50px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #namePrompt input {
+      padding: 12px;
+      font-size: 18px;
+      width: calc(100% - 24px);
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    #namePrompt button {
+      padding: 12px 25px;
+      font-size: 18px;
+      cursor: pointer;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    #namePrompt button:hover {
+      background-color: #218838;
+    }
+    .percentage-display {
+      font-size: 28px;
+      font-weight: bolder;
+      margin: 15px 0;
+      display: block;
+      color: #007bff;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      .header {
+        font-size: 16px;
+        flex-direction: column;
+        text-align: center;
+      }
+      .center-status {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+      .question {
+        font-size: 18px;
+      }
+      .options label {
+        font-size: 16px;
+      }
+      .btn {
+        font-size: 16px;
+        padding: 10px 15px;
+      }
+      .result {
+        font-size: 18px;
+        padding: 15px;
+      }
+      #namePrompt h2 {
+        font-size: 20px;
+      }
+      #namePrompt input, #namePrompt button {
+        font-size: 16px;
+        padding: 10px;
+      }
+      .percentage-display {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div id="namePrompt">
+  <h2>Please enter your name to start the Class 7 quiz</h2>
+  <input type="text" id="userNameInput" placeholder="Enter your name" onkeyup="checkEnter(event)" />
+  <button onclick="startQuiz()">Start Quiz</button>
+</div>
+<div id="quizSection" style="display: none;">
+  <div class="header">
+    <div id="qCounter"></div>
+    <div id="timer">⏱️ 00:00:00</div>
+    <div class="center-status">
+      ✅ <span id="right" class="green">0</span> |
+      ❌ <span id="wrong" class="red">0</span>
+    </div>
+  </div>
+  <div class="quiz-container">
+    <div class="question" id="questionText">Loading...</div>
+    <div class="options" id="optionsContainer"></div>
+    <button class="btn" onclick="nextQuestion()">Next</button>
+  </div>
+  <div class="result" id="resultContainer"></div>
+</div>
+<script>
+let quizData = [
+  // Science
+  { q: "Which of these is a conductor of electricity?", o: ["Plastic", "Wood", "Copper", "Rubber"], a: "Copper" },
+  { q: "What gas do plants absorb during photosynthesis?", o: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], a: "Carbon Dioxide" },
+  { q: "Which organ helps in digestion of food?", o: ["Heart", "Lungs", "Stomach", "Kidneys"], a: "Stomach" },
+  { q: "The process of changing liquid into vapor is called:", o: ["Condensation", "Evaporation", "Freezing", "Melting"], a: "Evaporation" },
+  { q: "Which planet is known as the Red Planet?", o: ["Earth", "Mars", "Venus", "Jupiter"], a: "Mars" },
+
+  // Math
+  { q: "What is 2/5 as a decimal?", o: ["0.2", "0.4", "0.5", "0.25"], a: "0.4" },
+  { q: "Find the value of 3² + 4²", o: ["7", "12", "25", "14"], a: "25" },
+  { q: "What is the perimeter of a square with side 5 cm?", o: ["10 cm", "15 cm", "20 cm", "25 cm"], a: "20 cm" },
+  { q: "Simplify: 2(x + 3) when x = 4", o: ["6", "8", "10", "14"], a: "14" },
+  { q: "What is the average of 4, 6, and 8?", o: ["5", "6", "7", "8"], a: "6" },
+
+  // English
+  { q: "Choose the correct spelling:", o: ["Recieve", "Receive", "Receve", "Riceive"], a: "Receive" },
+  { q: "Antonym of 'happy' is:", o: ["Sad", "Angry", "Joyful", "Excited"], a: "Sad" },
+  { q: "She ___ to school every day.", o: ["go", "going", "goes", "gone"], a: "goes" },
+  { q: "Which sentence is correct?", o: ["He don't like apples.", "He doesn't likes apples.", "He doesn't like apples.", "He not likes apples."], a: "He doesn't like apples." },
+  { q: "The synonym of 'fast' is:", o: ["Quick", "Slow", "Lazy", "Tired"], a: "Quick" },
+
+  // Social Studies
+  { q: "Who was the first Prime Minister of Pakistan?", o: ["Quaid-e-Azam", "Allama Iqbal", "Liaquat Ali Khan", "Abdul Qayyum Khan"], a: "Liaquat Ali Khan" },
+  { q: "How many provinces are there in Pakistan?", o: ["2", "3", "4", "5"], a: "4" },
+  { q: "The capital of Punjab is:", o: ["Karachi", "Peshawar", "Lahore", "Islamabad"], a: "Lahore" },
+  { q: "Which river is known as the 'Nile of Pakistan'?", o: ["Indus River", "Chenab River", "Jhelum River", "Ravi River"], a: "Indus River" },
+  { q: "When did Pakistan become an Islamic Republic?", o: ["1947", "1956", "1971", "1973"], a: "1956" },
+
+  // Additional Questions
+  { q: "What is the SI unit of force?", o: ["Watt", "Newton", "Joule", "Volt"], a: "Newton" },
+  { q: "Which one is a prime number?", o: ["4", "6", "7", "9"], a: "7" },
+  { q: "Which part of the plant absorbs water from soil?", o: ["Leaves", "Flowers", "Roots", "Stem"], a: "Roots" },
+  { q: "What is the largest country in South Asia?", o: ["China", "India", "Bangladesh", "Pakistan"], a: "India" },
+  { q: "The study of stars and planets is called:", o: ["Biology", "Chemistry", "Astronomy", "Geography"], a: "Astronomy" },
+  { q: "Which of the following is a renewable resource?", o: ["Coal", "Natural Gas", "Solar Energy", "Petroleum"], a: "Solar Energy" },
+  { q: "What is the full form of WWW?", o: ["World Wide Web", "Web World Wide", "Wide World Web", "World Web Wide"], a: "World Wide Web" },
+  { q: "What is the smallest unit of life?", o: ["Organ", "Tissue", "Cell", "Atom"], a: "Cell" },
+  { q: "Which bird is the national bird of Pakistan?", o: ["Peacock", "Eagle", "Pigeon", "Chukar"], a: "Chukar" },
+  { q: "The process of making food in plants is called:", o: ["Respiration", "Photosynthesis", "Transpiration", "Digestion"], a: "Photosynthesis" },
+  { q: "Which one is a natural satellite of Earth?", o: ["Sun", "Moon", "Mars", "Jupiter"], a: "Moon" },
+  { q: "What is the currency of Pakistan?", o: ["Rupee", "Dollar", "Euro", "Yen"], a: "Rupee" },
+  { q: "Which city is known as the 'City of Gardens'?", o: ["Islamabad", "Karachi", "Lahore", "Multan"], a: "Lahore" },
+  { q: "Which one is a scalar quantity?", o: ["Force", "Velocity", "Acceleration", "Mass"], a: "Mass" },
+  { q: "What is the chemical symbol for oxygen?", o: ["H", "O", "N", "C"], a: "O" },
+  { q: "What does a barometer measure?", o: ["Temperature", "Pressure", "Humidity", "Wind Speed"], a: "Pressure" },
+  { q: "Which language is widely spoken in Punjab?", o: ["Pashto", "Sindhi", "Punjabi", "Urdu"], a: "Punjabi" },
+  { q: "Which mountain range lies in northern Pakistan?", o: ["Alps", "Andes", "Himalayas", "Rocky Mountains"], a: "Himalayas" },
+  { q: "What is the main source of energy on Earth?", o: ["Moon", "Electricity", "Sun", "Fire"], a: "Sun" },
+  { q: "What is the plural of 'mouse'?", o: ["Mouse", "Mouses", "Mice", "Meese"], a: "Mice" },
+  { q: "Which of the following is a vertebrate animal?", o: ["Insect", "Fish", "Spider", "Worm"], a: "Fish" },
+  { q: "Which device converts electrical energy into sound?", o: ["Fan", "Speaker", "Bulb", "Iron"], a: "Speaker" },
+  { q: "Which one is a non-living thing?", o: ["Plant", "Bird", "Stone", "Animal"], a: "Stone" },
+  { q: "What is the past tense of 'write'?", o: ["Writing", "Written", "Wrote", "Writes"], a: "Wrote" },
+  { q: "Which one is a proper noun?", o: ["boy", "girl", "Ali", "chair"], a: "Ali" },
+  { q: "Which is the hardest naturally occurring substance?", o: ["Gold", "Iron", "Diamond", "Silver"], a: "Diamond" },
+  { q: "Which gas is most abundant in Earth's atmosphere?", o: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"], a: "Nitrogen" },
+  { q: "Which instrument measures temperature?", o: ["Barometer", "Thermometer", "Speedometer", "Voltmeter"], a: "Thermometer" },
+  { q: "What is the plural of 'child'?", o: ["Childs", "Children", "Childes", "Childings"], a: "Children" },
+  { q: "Which of the following is a desert in Pakistan?", o: ["Sahara", "Gobi", "Thar", "Kalahari"], a: "Thar" },
+  { q: "What is the opposite of 'increase'?", o: ["Grow", "Expand", "Decrease", "Multiply"], a: "Decrease" },
+  { q: "Which part of the computer is used to click items?", o: ["Keyboard", "Monitor", "Mouse", "Printer"], a: "Mouse" },
+  { q: "Which city is the capital of Pakistan?", o: ["Lahore", "Karachi", "Islamabad", "Peshawar"], a: "Islamabad" },
+  { q: "Which book is the holy book of Muslims?", o: ["Bible", "Quran", "Gita", "Torah"], a: "Quran" },
+  { q: "What is the process of removing waste from the body called?", o: ["Digestion", "Excretion", "Respiration", "Circulation"], a: "Excretion" },
+  { q: "Which one is a compound sentence?", o: ["I eat.", "He plays.", "It is raining.", "I like apples and oranges."], a: "I like apples and oranges." },
+  { q: "Which is the largest ocean?", o: ["Atlantic", "Indian", "Arctic", "Pacific"], a: "Pacific" },
+  { q: "Which one is a homogeneous mixture?", o: ["Sand and Water", "Oil and Water", "Salt and Water", "Soil"], a: "Salt and Water" },
+  { q: "What is the function of red blood cells?", o: ["Fight disease", "Carry oxygen", "Clot blood", "Store fat"], a: "Carry oxygen" },
+  { q: "What is the smallest particle of an element?", o: ["Molecule", "Compound", "Atom", "Cell"], a: "Atom" },
+  { q: "Which one is a physical change?", o: ["Burning wood", "Cooking food", "Melting ice", "Rusting iron"], a: "Melting ice" },
+  { q: "What is the full form of CPU?", o: ["Central Processing Unit", "Central Process Unit", "Center Processing Unit", "Central Processor Unit"], a: "Central Processing Unit" },
+  { q: "Which one is a warm-blooded animal?", o: ["Frog", "Snake", "Fish", "Bird"], a: "Bird" },
+  { q: "Which one is a public place?", o: ["Home", "School", "Park", "Office"], a: "Park" },
+  { q: "Which one is a collective noun?", o: ["Boy", "Girl", "Team", "Chair"], a: "Team" },
+  { q: "Which one is a simple machine?", o: ["Car", "Bicycle", "Lever", "Computer"], a: "Lever" },
+  { q: "What is the freezing point of water?", o: ["0°C", "100°C", "50°C", "25°C"], a: "0°C" },
+  { q: "Which one is a common noun?", o: ["Ali", "John", "Dog", "Islamabad"], a: "Dog" },
+  { q: "Which one is a man-made resource?", o: ["Air", "Water", "Minerals", "Buildings"], a: "Buildings" }
+];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+shuffle(quizData);
+
+let currentQ = 0;
+let rightAnswers = 0;
+let wrongAnswers = 0;
+let seconds = 0;
+let userName = "";
+let timerInterval;
+
+function startQuiz() {
+  const input = document.getElementById("userNameInput").value.trim();
+  if (input === "") {
+    alert("Please enter your name.");
+    return;
+  }
+  userName = input;
+  document.getElementById("namePrompt").style.display = "none";
+  document.getElementById("quizSection").style.display = "block";
+  loadQuestion();
+  startTimer();
+}
+
+function checkEnter(event) {
+  if (event.key === "Enter") {
+    startQuiz();
+  }
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    seconds++;
+    const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+    const secs = String(seconds % 60).padStart(2, '0');
+    document.getElementById("timer").innerText = `⏱️ ${hrs}:${mins}:${secs}`;
+  }, 1000);
+}
+
+function loadQuestion() {
+  const qData = quizData[currentQ];
+  document.getElementById("qCounter").innerText = `❓ Question ${currentQ + 1} of ${quizData.length}`;
+  document.getElementById("questionText").innerHTML = qData.q;
+  const optionsHTML = qData.o.map(opt =>
+    `<label><input type="radio" name="option" value="${opt}"> ${opt}</label>`
+  ).join("");
+  document.getElementById("optionsContainer").innerHTML = optionsHTML;
+}
+
+function nextQuestion() {
+  const selected = document.querySelector('input[name="option"]:checked');
+  if (!selected) {
+    alert("Please select an answer!");
+    return;
+  }
+
+  const cleanString = (str) => str.replace(/<[^>]*>/g, '').replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}]/gu, '').trim();
+  const selectedValueClean = cleanString(selected.value);
+  const correctAnswerClean = cleanString(quizData[currentQ].a);
+
+  if (selectedValueClean === correctAnswerClean) {
+    rightAnswers++;
+  } else {
+    wrongAnswers++;
+  }
+
+  document.getElementById("right").innerText = rightAnswers;
+  document.getElementById("wrong").innerText = wrongAnswers;
+
+  currentQ++;
+  if (currentQ < quizData.length) {
+    loadQuestion();
+  } else {
+    clearInterval(timerInterval);
+    showResult();
+  }
+}
+
+function showResult() {
+  document.querySelector(".quiz-container").style.display = "none";
+  const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+  const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+  const secs = String(seconds % 60).padStart(2, '0');
+  const totalQuestions = quizData.length;
+  const percentage = (rightAnswers / totalQuestions) * 100;
+
+  document.getElementById("resultContainer").innerHTML = `
+    👦 Student: <strong>${userName}</strong><br><br>
+    ✅ Correct: <span class="green">${rightAnswers}</span> |
+    ❌ Wrong: <span class="red">${wrongAnswers}</span><br>
+    <span class="percentage-display">📊 Percentage: ${percentage.toFixed(2)}%</span><br>
+    ⏱️ Time Taken: ${hrs}:${mins}:${secs}<br>
+    🎯 Total Score: ${rightAnswers} / ${quizData.length}
+  `;
+}
+</script>
+</body>
+</html>
