@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎓 Early Learning Quiz for Kids</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #FFE5B4, #FFB6C1, #E6E6FA);
+      line-height: 1.6;
+    }
+    .header, .quiz-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 0 10px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #2E8B57;
+    }
+    .center-status {
+      flex: 1 1 100%;
+      text-align: center;
+      margin-top: 10px;
+      font-size: 22px;
+    }
+    .quiz-container {
+      background: #fff;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      border: 3px solid #FF69B4;
+    }
+    .question {
+      font-size: 24px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      color: #4169E1;
+      text-align: center;
+      background: #F0F8FF;
+      padding: 15px;
+      border-radius: 15px;
+      border: 2px dashed #FF1493;
+    }
+    .options label {
+      display: block;
+      margin: 15px 0;
+      cursor: pointer;
+      padding: 15px;
+      border: 3px solid #32CD32;
+      border-radius: 15px;
+      transition: all 0.3s ease;
+      font-size: 20px;
+      font-weight: bold;
+      background: linear-gradient(45deg, #FFFACD, #F0FFFF);
+    }
+    .options label:hover {
+      background: linear-gradient(45deg, #98FB98, #FFE4E1);
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    .options label input[type="radio"] {
+      margin-right: 15px;
+      transform: scale(1.5);
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      margin-top: 30px;
+      padding: 18px 25px;
+      font-size: 22px;
+      cursor: pointer;
+      background: linear-gradient(45deg, #FF6347, #FF4500);
+      color: white;
+      border: none;
+      border-radius: 15px;
+      transition: all 0.3s ease;
+      font-weight: bold;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    .btn:hover {
+      background: linear-gradient(45deg, #FF4500, #FF6347);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+    .result {
+      margin-top: 30px;
+      font-size: 24px;
+      text-align: center;
+      font-weight: bold;
+      background: linear-gradient(135deg, #FFE4B5, #F0E68C);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      border: 3px solid #DAA520;
+    }
+    .green { color: #228B22; }
+    .red { color: #DC143C; }
+    #namePrompt {
+      text-align: center;
+      margin-top: 50px;
+      padding: 30px;
+      background: linear-gradient(135deg, #FFF8DC, #F5DEB3);
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      border: 3px solid #D2691E;
+    }
+    #namePrompt h2 {
+      color: #8B4513;
+      font-size: 26px;
+      margin-bottom: 20px;
+    }
+    #namePrompt input {
+      padding: 15px;
+      font-size: 20px;
+      width: calc(100% - 30px);
+      margin-bottom: 20px;
+      border: 3px solid #20B2AA;
+      border-radius: 10px;
+      text-align: center;
+    }
+    #namePrompt button {
+      padding: 15px 30px;
+      font-size: 20px;
+      cursor: pointer;
+      background: linear-gradient(45deg, #32CD32, #228B22);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      font-weight: bold;
+    }
+    #namePrompt button:hover {
+      background: linear-gradient(45deg, #228B22, #32CD32);
+      transform: scale(1.05);
+    }
+    .percentage-display {
+      font-size: 32px;
+      font-weight: bolder;
+      margin: 20px 0;
+      display: block;
+      color: #FF1493;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    .bold-content {
+      font-weight: bold;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      .header {
+        font-size: 18px;
+        flex-direction: column;
+        text-align: center;
+      }
+      .center-status {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        font-size: 20px;
+      }
+      .question {
+        font-size: 20px;
+      }
+      .options label {
+        font-size: 18px;
+        padding: 12px;
+      }
+      .btn {
+        font-size: 18px;
+        padding: 15px 20px;
+      }
+      .result {
+        font-size: 20px;
+        padding: 20px;
+      }
+      #namePrompt h2 {
+        font-size: 22px;
+      }
+      #namePrompt input, #namePrompt button {
+        font-size: 18px;
+        padding: 12px;
+      }
+      .percentage-display {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div id="namePrompt">
+  <h2>🌟 آپ کا نام کیا ہے؟ What's your name? 🌟</h2>
+  <input type="text" id="userNameInput" placeholder="یہاں اپنا نام لکھیں | Enter your name here" onkeyup="checkEnter(event)" />
+  <button onclick="startQuiz()">🚀 شروع کریں | Start Quiz 🚀</button>
+</div>
+<div id="quizSection" style="display: none;">
+  <div class="header">
+    <div id="qCounter"></div>
+    <div id="timer">⏰ 00:00:00</div>
+    <div class="center-status">
+      🎉 ✅ <span id="right" class="green">0</span> |
+      💪 ❌ <span id="wrong" class="red">0</span> 🌈
+    </div>
+  </div>
+  <div class="quiz-container">
+    <div class="question" id="questionText">Loading...</div>
+    <div class="options" id="optionsContainer"></div>
+    <button class="btn" onclick="nextQuestion()">➡️ اگلا سوال | Next Question</button>
+  </div>
+  <div class="result" id="resultContainer"></div>
+</div>
+<script>
+let quizData = [
+  // Colors & Basic Recognition
+  { q: "🔴🟢🔵🟡 Which one is red?", o: ["🔴", "🟢", "🔵", "🟡"], a: "🔴" },
+  { q: "🍌 What is this?", o: ["🍎", "🍌", "🍊", "🍇"], a: "🍌" },
+  { q: "🐱 What sound does this make?", o: ["🐄 Moo", "🐶 Woof", "🐱 Meow", "🐴 Neigh"], a: "🐱 Meow" },
+  { q: "☀️ What shines in daytime?", o: ["🌙", "⭐", "☀️", "☁️"], a: "☀️" },
+  { q: "🚗 What is this?", o: ["🚗", "✈️", "🚲", "🚢"], a: "🚗" },
+
+  // Numbers & Counting
+  { q: "1️⃣➕1️⃣ = ?", o: ["1️⃣", "2️⃣", "3️⃣", "4️⃣"], a: "2️⃣" },
+  { q: "🍎🍎🍎 How many?", o: ["2️⃣", "3️⃣", "4️⃣", "5️⃣"], a: "3️⃣" },
+  { q: "5️⃣ What comes next?", o: ["4️⃣", "6️⃣", "7️⃣", "8️⃣"], a: "6️⃣" },
+  { q: "⭐⭐⭐⭐⭐ Count stars", o: ["4️⃣", "5️⃣", "6️⃣", "7️⃣"], a: "5️⃣" },
+  { q: "2️⃣➕3️⃣ = ?", o: ["4️⃣", "5️⃣", "6️⃣", "7️⃣"], a: "5️⃣" },
+
+  // Animals & Sounds
+  { q: "🐄 What sound?", o: ["🐱 Meow", "🐄 Moo", "🐶 Woof", "🐓 Cock-a-doodle"], a: "🐄 Moo" },
+  { q: "🐘 What animal?", o: ["🐘", "🦁", "🐯", "🐻"], a: "🐘" },
+  { q: "🐓 When does it crow?", o: ["🌙", "🌅", "🌆", "🌃"], a: "🌅" },
+  { q: "🐠 Where does it live?", o: ["🌳", "🏠", "🌊", "🌙"], a: "🌊" },
+  { q: "🦅 What can it do?", o: ["🏃", "🏊", "🦅 Fly", "🚶"], a: "🦅 Fly" },
+
+  // Body Parts
+  { q: "👁️ What do we see with?", o: ["👁️", "👂", "👃", "👄"], a: "👁️" },
+  { q: "👂 What do we hear with?", o: ["👁️", "👂", "👃", "👄"], a: "👂" },
+  { q: "🦶 What do we walk with?", o: ["👋", "🦶", "👁️", "👂"], a: "🦶" },
+  { q: "👄 What do we eat with?", o: ["👋", "🦶", "👄", "👃"], a: "👄" },
+  { q: "👃 What do we smell with?", o: ["👁️", "👂", "👃", "👄"], a: "👃" },
+
+  // Shapes & Objects
+  { q: "🔴 What shape?", o: ["🔴", "⬜", "🔺", "⭐"], a: "🔴" },
+  { q: "🌳 Where does it grow?", o: ["🌊", "🌍", "☁️", "🌙"], a: "🌍" },
+  { q: "🏠 Where do we live?", o: ["🌳", "🏠", "🌊", "☁️"], a: "🏠" },
+  { q: "📚 What is this?", o: ["📚", "✏️", "🖍️", "📏"], a: "📚" },
+  { q: "⚽ What shape?", o: ["⬜", "🔺", "⚽", "⭐"], a: "⚽" },
+
+  // Family & Relations
+  { q: "👨 Father emoji?", o: ["👨", "👩", "👦", "👧"], a: "👨" },
+  { q: "👩 Mother emoji?", o: ["👨", "👩", "👦", "👧"], a: "👩" },
+  { q: "👴 Who is this?", o: ["👨", "👩", "👦", "👴"], a: "👴" },
+  { q: "🏠 Who lives here?", o: ["👨‍👩‍👧‍👦", "🐯", "🐠", "🦅"], a: "👨‍👩‍👧‍👦" },
+  { q: "💕 How do we feel?", o: ["😡", "💕", "😢", "😴"], a: "💕" },
+
+  // Daily Activities
+  { q: "🌅 What do we do?", o: ["😴", "🌅 Wake", "🌃", "🍽️"], a: "🌅 Wake" },
+  { q: "🦷 Why brush teeth?", o: ["🦷 Clean", "😴", "🏃", "📚"], a: "🦷 Clean" },
+  { q: "🍽️ When do we eat?", o: ["😴", "🛁", "🍽️", "📚"], a: "🍽️" },
+  { q: "🌙 Night activity?", o: ["🏃", "😴", "📚", "🎮"], a: "😴" },
+  { q: "🎒 What for school?", o: ["🎒", "🍰", "🧸", "📺"], a: "🎒" },
+
+  // Food & Fruits
+  { q: "🍎 Which fruit?", o: ["🍎", "🍌", "🍊", "🍇"], a: "🍎" },
+  { q: "🥛 What color?", o: ["🔴", "🟢", "⚪", "🔵"], a: "⚪" },
+  { q: "🍞 What is this?", o: ["🍞 Food", "🧸", "📚", "👕"], a: "🍞 Food" },
+  { q: "🧄 What happens?", o: ["😄", "😢", "😴", "🏃"], a: "😢" },
+  { q: "🍯 Who makes it?", o: ["🐝", "🐱", "🐄", "🐓"], a: "🐝" }
+];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+shuffle(quizData);
+
+let currentQ = 0;
+let rightAnswers = 0;
+let wrongAnswers = 0;
+let seconds = 0;
+let userName = "";
+let timerInterval;
+
+function startQuiz() {
+  const input = document.getElementById("userNameInput").value.trim();
+  if (input === "") {
+    alert("🌟 برائے کرم اپنا نام لکھیں! Please enter your name! 🌟");
+    return;
+  }
+  userName = input;
+  document.getElementById("namePrompt").style.display = "none";
+  document.getElementById("quizSection").style.display = "block";
+  loadQuestion();
+  startTimer();
+}
+
+function checkEnter(event) {
+  if (event.key === "Enter") {
+    startQuiz();
+  }
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    seconds++;
+    const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+    const secs = String(seconds % 60).padStart(2, '0');
+    document.getElementById("timer").innerText = `⏰ ${hrs}:${mins}:${secs}`;
+  }, 1000);
+}
+
+function loadQuestion() {
+  const qData = quizData[currentQ];
+  document.getElementById("qCounter").innerText = `❓ سوال | Question ${currentQ + 1} of ${quizData.length}`;
+  document.getElementById("questionText").innerHTML = qData.q;
+  const optionsHTML = qData.o.map(opt =>
+    `<label><input type="radio" name="option" value="${opt}"> ${opt}</label>`
+  ).join("");
+  document.getElementById("optionsContainer").innerHTML = optionsHTML;
+}
+
+function nextQuestion() {
+  const selected = document.querySelector('input[name="option"]:checked');
+  if (!selected) {
+    alert("🤔 برائے کرم جواب منتخب کریں! Please select an answer! 🤔");
+    return;
+  }
+
+  const cleanString = (str) => str.replace(/<[^>]*>/g, '').replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}]/gu, '').trim();
+  const selectedValueClean = cleanString(selected.value);
+  const correctAnswerClean = cleanString(quizData[currentQ].a);
+
+  if (selectedValueClean === correctAnswerClean) {
+    rightAnswers++;
+  } else {
+    wrongAnswers++;
+  }
+
+  document.getElementById("right").innerText = rightAnswers;
+  document.getElementById("wrong").innerText = wrongAnswers;
+
+  currentQ++;
+  if (currentQ < quizData.length) {
+    loadQuestion();
+  } else {
+    clearInterval(timerInterval);
+    showResult();
+  }
+}
+
+function showResult() {
+  document.querySelector(".quiz-container").style.display = "none";
+  const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+  const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+  const secs = String(seconds % 60).padStart(2, '0');
+  const totalQuestions = quizData.length;
+  const percentage = (rightAnswers / totalQuestions) * 100;
+  
+  let encouragement = "";
+  if (percentage >= 90) {
+    encouragement = "🌟 واہ! آپ تو ستارہ ہیں! Wow! You're a star! 🌟";
+  } else if (percentage >= 70) {
+    encouragement = "🎉 بہت اچھا! Very good! 🎉";
+  } else if (percentage >= 50) {
+    encouragement = "👍 اچھا! مزید محنت کریں! Good! Keep trying! 👍";
+  } else {
+    encouragement = "💪 کوئی بات نہیں! مزید پڑھیں! No worries! Study more! 💪";
+  }
+
+  document.getElementById("resultContainer").innerHTML = `
+    🧒 بچہ | Student: <strong>${userName}</strong><br><br>
+    ${encouragement}<br><br>
+    ✅ صحیح | Correct: <span class="green">${rightAnswers}</span> |
+    ❌ غلط | Wrong: <span class="red">${wrongAnswers}</span><br>
+    <span class="percentage-display">📊 فیصد | Percentage: ${percentage.toFixed(2)}%</span><br>
+    ⏰ وقت | Time Taken: ${hrs}:${mins}:${secs}<br>
+    🎯 کل اسکور | Total Score: ${rightAnswers} / ${quizData.length}<br><br>
+    🌈 شکریہ! آپ نے بہت اچھا کیا! Thank you! You did great! 🌈
+  `;
+}
+</script>
+</body>
+</html>
