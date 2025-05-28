@@ -11,6 +11,7 @@
       padding: 20px;
       background: #f0f8ff;
       line-height: 1.6;
+      overflow-x: hidden;
     }
     .header, .quiz-container {
       max-width: 800px;
@@ -36,6 +37,7 @@
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      position: relative;
     }
     .question {
       font-size: 24px;
@@ -148,6 +150,107 @@
     .numbers { background-color: #fff3cd; color: #856404; }
     .shapes { background-color: #f8d7da; color: #721c24; }
     .general { background-color: #e2d4f0; color: #4a2d7a; }
+
+    /* Celebration styles */
+    .celebration {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .balloon {
+      position: absolute;
+      width: 50px;
+      height: 60px;
+      background-color: #ff6b6b;
+      border-radius: 50%;
+      animation: float-up 4s ease-in forwards;
+    }
+    .balloon::before {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 25px;
+      width: 2px;
+      height: 20px;
+      background-color: #333;
+    }
+    .balloon:nth-child(2n) {
+      background-color: #4CAF50;
+    }
+    .balloon:nth-child(3n) {
+      background-color: #FF9800;
+    }
+    .balloon:nth-child(4n) {
+      background-color: #2196F3;
+    }
+    .balloon:nth-child(5n) {
+      background-color: #9C27B0;
+    }
+    @keyframes float-up {
+      0% {
+        transform: translateY(100vh) scale(0.5);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) scale(1.2);
+        opacity: 0;
+      }
+    }
+    .sorry-message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(220, 53, 69, 0.9);
+      color: white;
+      padding: 20px 40px;
+      border-radius: 10px;
+      font-size: 24px;
+      z-index: 1001;
+      animation: fade-out 2s ease-in forwards;
+    }
+    @keyframes fade-out {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      70% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+      }
+    }
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background-color: #f00;
+      animation: confetti-fall 3s linear forwards;
+      z-index: 999;
+    }
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
 
     @media (max-width: 600px) {
       body {
@@ -592,6 +695,57 @@ function loadQuestion() {
   document.getElementById("optionsContainer").innerHTML = optionsHTML;
 }
 
+function createBalloons() {
+  const celebration = document.createElement('div');
+  celebration.className = 'celebration';
+  
+  for (let i = 0; i < 20; i++) {
+    const balloon = document.createElement('div');
+    balloon.className = 'balloon';
+    balloon.style.left = `${Math.random() * 100}%`;
+    balloon.style.animationDuration = `${3 + Math.random() * 3}s`;
+    balloon.style.opacity = '0';
+    celebration.appendChild(balloon);
+  }
+  
+  document.body.appendChild(celebration);
+  
+  // Remove after animation completes
+  setTimeout(() => {
+    celebration.remove();
+  }, 4000);
+}
+
+function createConfetti() {
+  for (let i = 0; i < 50; i++) {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti';
+    confetti.style.left = `${Math.random() * 100}%`;
+    confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+    confetti.style.animationDuration = `${1 + Math.random() * 2}s`;
+    confetti.style.width = `${5 + Math.random() * 10}px`;
+    confetti.style.height = `${5 + Math.random() * 10}px`;
+    document.body.appendChild(confetti);
+    
+    // Remove after animation completes
+    setTimeout(() => {
+      confetti.remove();
+    }, 3000);
+  }
+}
+
+function showSorry() {
+  const sorry = document.createElement('div');
+  sorry.className = 'sorry-message';
+  sorry.textContent = 'Sorry! 😢';
+  document.body.appendChild(sorry);
+  
+  // Remove after animation completes
+  setTimeout(() => {
+    sorry.remove();
+  }, 2000);
+}
+
 function nextQuestion() {
   const selected = document.querySelector('input[name="option"]:checked');
   if (!selected) {
@@ -604,10 +758,11 @@ function nextQuestion() {
 
   if (selectedValue === correctAnswer) {
     rightAnswers++;
-    alert("Correct! 🎉");
+    createBalloons();
+    createConfetti();
   } else {
     wrongAnswers++;
-    alert(`Oops! The correct answer was: ${correctAnswer}`);
+    showSorry();
   }
 
   document.getElementById("right").innerText = rightAnswers;
