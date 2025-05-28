@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🎓 Early Learning Quiz for Kids</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kids Fun Quiz</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
       margin: 0;
       padding: 20px;
-      background: linear-gradient(135deg, #FFE5B4, #FFB6C1, #E6E6FA);
+      background: #f0f8ff;
       line-height: 1.6;
     }
     .header, .quiz-container {
@@ -23,261 +23,511 @@
       align-items: center;
       flex-wrap: wrap;
       margin-bottom: 20px;
-      font-size: 20px;
+      font-size: 18px;
       font-weight: bold;
-      color: #2E8B57;
     }
     .center-status {
       flex: 1 1 100%;
       text-align: center;
       margin-top: 10px;
-      font-size: 22px;
     }
     .quiz-container {
       background: #fff;
-      padding: 25px;
-      border-radius: 20px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-      border: 3px solid #FF69B4;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
     .question {
       font-size: 24px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       font-weight: bold;
-      color: #4169E1;
-      text-align: center;
-      background: #F0F8FF;
-      padding: 15px;
-      border-radius: 15px;
-      border: 2px dashed #FF1493;
+      color: #ff6b6b;
     }
     .options label {
       display: block;
-      margin: 15px 0;
+      margin: 10px 0;
       cursor: pointer;
-      padding: 15px;
-      border: 3px solid #32CD32;
-      border-radius: 15px;
-      transition: all 0.3s ease;
+      padding: 12px;
+      border: 2px solid #eee;
+      border-radius: 10px;
+      transition: all 0.2s ease;
       font-size: 20px;
-      font-weight: bold;
-      background: linear-gradient(45deg, #FFFACD, #F0FFFF);
     }
     .options label:hover {
-      background: linear-gradient(45deg, #98FB98, #FFE4E1);
-      transform: scale(1.05);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      background-color: #f9f9f9;
+      transform: scale(1.02);
     }
     .options label input[type="radio"] {
-      margin-right: 15px;
+      margin-right: 10px;
       transform: scale(1.5);
     }
     .btn {
       display: block;
       width: 100%;
-      margin-top: 30px;
-      padding: 18px 25px;
+      margin-top: 25px;
+      padding: 15px 20px;
       font-size: 22px;
       cursor: pointer;
-      background: linear-gradient(45deg, #FF6347, #FF4500);
+      background-color: #4CAF50;
       color: white;
       border: none;
-      border-radius: 15px;
-      transition: all 0.3s ease;
-      font-weight: bold;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      transition: background-color 0.2s ease;
     }
     .btn:hover {
-      background: linear-gradient(45deg, #FF4500, #FF6347);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      background-color: #45a049;
     }
     .result {
       margin-top: 30px;
       font-size: 24px;
       text-align: center;
       font-weight: bold;
-      background: linear-gradient(135deg, #FFE4B5, #F0E68C);
-      padding: 25px;
-      border-radius: 20px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-      border: 3px solid #DAA520;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-    .green { color: #228B22; }
-    .red { color: #DC143C; }
+    .green { color: #28a745; }
+    .red { color: #dc3545; }
     #namePrompt {
       text-align: center;
       margin-top: 50px;
-      padding: 30px;
-      background: linear-gradient(135deg, #FFF8DC, #F5DEB3);
-      border-radius: 20px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       max-width: 500px;
       margin-left: auto;
       margin-right: auto;
-      border: 3px solid #D2691E;
     }
     #namePrompt h2 {
-      color: #8B4513;
-      font-size: 26px;
-      margin-bottom: 20px;
+      font-size: 24px;
+      color: #ff6b6b;
     }
     #namePrompt input {
       padding: 15px;
       font-size: 20px;
       width: calc(100% - 30px);
-      margin-bottom: 20px;
-      border: 3px solid #20B2AA;
+      margin-bottom: 15px;
+      border: 2px solid #ccc;
       border-radius: 10px;
-      text-align: center;
     }
     #namePrompt button {
       padding: 15px 30px;
       font-size: 20px;
+      margin-left: 0;
       cursor: pointer;
-      background: linear-gradient(45deg, #32CD32, #228B22);
+      background-color: #FF9800;
       color: white;
       border: none;
       border-radius: 10px;
-      transition: all 0.3s ease;
-      font-weight: bold;
+      transition: background-color 0.2s ease;
     }
     #namePrompt button:hover {
-      background: linear-gradient(45deg, #228B22, #32CD32);
-      transform: scale(1.05);
+      background-color: #e68a00;
     }
     .percentage-display {
-      font-size: 32px;
+      font-size: 28px;
       font-weight: bolder;
-      margin: 20px 0;
+      margin: 15px 0;
       display: block;
-      color: #FF1493;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      color: #FF9800;
     }
     .bold-content {
       font-weight: bold;
     }
+    .subject-tag {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+    .animals { background-color: #d4edda; color: #155724; }
+    .colors { background-color: #cce5ff; color: #004085; }
+    .numbers { background-color: #fff3cd; color: #856404; }
+    .shapes { background-color: #f8d7da; color: #721c24; }
+    .general { background-color: #e2d4f0; color: #4a2d7a; }
+
     @media (max-width: 600px) {
       body {
         padding: 10px;
       }
       .header {
-        font-size: 18px;
+        font-size: 16px;
         flex-direction: column;
         text-align: center;
       }
       .center-status {
         margin-top: 10px;
         margin-bottom: 10px;
-        font-size: 20px;
       }
       .question {
         font-size: 20px;
       }
       .options label {
         font-size: 18px;
-        padding: 12px;
       }
       .btn {
         font-size: 18px;
-        padding: 15px 20px;
+        padding: 12px 15px;
       }
       .result {
         font-size: 20px;
-        padding: 20px;
+        padding: 15px;
       }
       #namePrompt h2 {
-        font-size: 22px;
+        font-size: 20px;
       }
       #namePrompt input, #namePrompt button {
         font-size: 18px;
         padding: 12px;
       }
       .percentage-display {
-        font-size: 28px;
+        font-size: 24px;
       }
     }
   </style>
 </head>
 <body>
+
 <div id="namePrompt">
-  <h2>🌟 آپ کا نام کیا ہے؟ What's your name? 🌟</h2>
-  <input type="text" id="userNameInput" placeholder="یہاں اپنا نام لکھیں | Enter your name here" onkeyup="checkEnter(event)" />
-  <button onclick="startQuiz()">🚀 شروع کریں | Start Quiz 🚀</button>
+  <h2>🌟 Welcome to Kids Fun Quiz! 🌟</h2>
+  <input type="text" id="userNameInput" placeholder="Enter your name" onkeyup="checkEnter(event)" />
+  <button onclick="startQuiz()">Start Quiz 🚀</button>
 </div>
+
 <div id="quizSection" style="display: none;">
   <div class="header">
     <div id="qCounter"></div>
-    <div id="timer">⏰ 00:00:00</div>
+    <div id="timer">⏱️ 00:00:00</div>
     <div class="center-status">
-      🎉 ✅ <span id="right" class="green">0</span> |
-      💪 ❌ <span id="wrong" class="red">0</span> 🌈
+      ✅ <span id="right" class="green">0</span> |
+      ❌ <span id="wrong" class="red">0</span>
     </div>
   </div>
+
   <div class="quiz-container">
+    <div id="subjectTag" class="subject-tag"></div>
     <div class="question" id="questionText">Loading...</div>
     <div class="options" id="optionsContainer"></div>
-    <button class="btn" onclick="nextQuestion()">➡️ اگلا سوال | Next Question</button>
+    <button class="btn" onclick="nextQuestion()">Next ➡️</button>
   </div>
+
   <div class="result" id="resultContainer"></div>
 </div>
+
 <script>
 let quizData = [
-  // Colors & Basic Recognition
-  { q: "🔴🟢🔵🟡 Which one is red?", o: ["🔴", "🟢", "🔵", "🟡"], a: "🔴" },
-  { q: "🍌 What is this?", o: ["🍎", "🍌", "🍊", "🍇"], a: "🍌" },
-  { q: "🐱 What sound does this make?", o: ["🐄 Moo", "🐶 Woof", "🐱 Meow", "🐴 Neigh"], a: "🐱 Meow" },
-  { q: "☀️ What shines in daytime?", o: ["🌙", "⭐", "☀️", "☁️"], a: "☀️" },
-  { q: "🚗 What is this?", o: ["🚗", "✈️", "🚲", "🚢"], a: "🚗" },
+  // Animals (10)
+  {
+    subject: "animals",
+    q: "Which animal says 'Moo'? 🐄",
+    o: ["🐕 Dog", "🐈 Cat", "🐄 Cow", "🐘 Elephant"],
+    a: "🐄 Cow"
+  },
+  {
+    subject: "animals",
+    q: "Which animal has a long trunk? 🐘",
+    o: ["🦒 Giraffe", "🐘 Elephant", "🦁 Lion", "🐒 Monkey"],
+    a: "🐘 Elephant"
+  },
+  {
+    subject: "animals",
+    q: "Which animal lives in water and has fins? 🐠",
+    o: ["🐦 Bird", "🐕 Dog", "🐠 Fish", "🐜 Ant"],
+    a: "🐠 Fish"
+  },
+  {
+    subject: "animals",
+    q: "Which animal hops and has long ears? 🐰",
+    o: ["🐶 Puppy", "🐱 Kitten", "🐰 Bunny", "🐹 Hamster"],
+    a: "🐰 Bunny"
+  },
+  {
+    subject: "animals",
+    q: "Which animal is the king of the jungle? 🦁",
+    o: ["🐯 Tiger", "🦁 Lion", "🐻 Bear", "🐺 Wolf"],
+    a: "🦁 Lion"
+  },
+  {
+    subject: "animals",
+    q: "Which animal gives us wool? 🐑",
+    o: ["🐄 Cow", "🐖 Pig", "🐑 Sheep", "🐓 Chicken"],
+    a: "🐑 Sheep"
+  },
+  {
+    subject: "animals",
+    q: "Which animal has black and white stripes? 🦓",
+    o: ["🐆 Cheetah", "🦓 Zebra", "🐘 Elephant", "🦒 Giraffe"],
+    a: "🦓 Zebra"
+  },
+  {
+    subject: "animals",
+    q: "Which animal is very slow? 🐢",
+    o: ["🐇 Rabbit", "🐢 Turtle", "🐆 Cheetah", "🐒 Monkey"],
+    a: "🐢 Turtle"
+  },
+  {
+    subject: "animals",
+    q: "Which animal has a long neck? 🦒",
+    o: ["🐘 Elephant", "🦒 Giraffe", "🐫 Camel", "🦛 Hippo"],
+    a: "🦒 Giraffe"
+  },
+  {
+    subject: "animals",
+    q: "Which animal barks? 🐕",
+    o: ["🐈 Cat", "🐕 Dog", "🐄 Cow", "🐓 Chicken"],
+    a: "🐕 Dog"
+  },
 
-  // Numbers & Counting
-  { q: "1️⃣➕1️⃣ = ?", o: ["1️⃣", "2️⃣", "3️⃣", "4️⃣"], a: "2️⃣" },
-  { q: "🍎🍎🍎 How many?", o: ["2️⃣", "3️⃣", "4️⃣", "5️⃣"], a: "3️⃣" },
-  { q: "5️⃣ What comes next?", o: ["4️⃣", "6️⃣", "7️⃣", "8️⃣"], a: "6️⃣" },
-  { q: "⭐⭐⭐⭐⭐ Count stars", o: ["4️⃣", "5️⃣", "6️⃣", "7️⃣"], a: "5️⃣" },
-  { q: "2️⃣➕3️⃣ = ?", o: ["4️⃣", "5️⃣", "6️⃣", "7️⃣"], a: "5️⃣" },
+  // Colors (10)
+  {
+    subject: "colors",
+    q: "What color is the sun? ☀️",
+    o: ["🔵 Blue", "🟡 Yellow", "🟢 Green", "🔴 Red"],
+    a: "🟡 Yellow"
+  },
+  {
+    subject: "colors",
+    q: "What color is grass? 🌱",
+    o: ["🔵 Blue", "🟢 Green", "🟣 Purple", "🟠 Orange"],
+    a: "🟢 Green"
+  },
+  {
+    subject: "colors",
+    q: "What color is an apple? 🍎",
+    o: ["🟢 Green", "🔵 Blue", "🔴 Red", "🟡 Yellow"],
+    a: "🔴 Red"
+  },
+  {
+    subject: "colors",
+    q: "What color is the sky on a sunny day? ☀️",
+    o: ["⚫ Black", "🔵 Blue", "🟢 Green", "🟣 Purple"],
+    a: "🔵 Blue"
+  },
+  {
+    subject: "colors",
+    q: "What color is a banana? 🍌",
+    o: ["🟡 Yellow", "🟠 Orange", "🟢 Green", "🔴 Red"],
+    a: "🟡 Yellow"
+  },
+  {
+    subject: "colors",
+    q: "What color is snow? ❄️",
+    o: ["⚪ White", "⚫ Black", "🔵 Blue", "🟢 Green"],
+    a: "⚪ White"
+  },
+  {
+    subject: "colors",
+    q: "What color is a carrot? 🥕",
+    o: ["🟠 Orange", "🔴 Red", "🟡 Yellow", "🟢 Green"],
+    a: "🟠 Orange"
+  },
+  {
+    subject: "colors",
+    q: "What color is chocolate? 🍫",
+    o: ["🟤 Brown", "⚫ Black", "🔴 Red", "🟡 Yellow"],
+    a: "🟤 Brown"
+  },
+  {
+    subject: "colors",
+    q: "What color is a strawberry? 🍓",
+    o: ["🟢 Green", "🔴 Red", "🟣 Purple", "🟠 Orange"],
+    a: "🔴 Red"
+  },
+  {
+    subject: "colors",
+    q: "What color is the moon at night? 🌙",
+    o: ["⚪ White", "🟡 Yellow", "🔵 Blue", "⚫ Black"],
+    a: "⚪ White"
+  },
 
-  // Animals & Sounds
-  { q: "🐄 What sound?", o: ["🐱 Meow", "🐄 Moo", "🐶 Woof", "🐓 Cock-a-doodle"], a: "🐄 Moo" },
-  { q: "🐘 What animal?", o: ["🐘", "🦁", "🐯", "🐻"], a: "🐘" },
-  { q: "🐓 When does it crow?", o: ["🌙", "🌅", "🌆", "🌃"], a: "🌅" },
-  { q: "🐠 Where does it live?", o: ["🌳", "🏠", "🌊", "🌙"], a: "🌊" },
-  { q: "🦅 What can it do?", o: ["🏃", "🏊", "🦅 Fly", "🚶"], a: "🦅 Fly" },
+  // Numbers (10)
+  {
+    subject: "numbers",
+    q: "How many legs does a dog have? 🐕",
+    o: ["2️⃣ Two", "4️⃣ Four", "6️⃣ Six", "8️⃣ Eight"],
+    a: "4️⃣ Four"
+  },
+  {
+    subject: "numbers",
+    q: "How many fingers do you have on one hand? ✋",
+    o: ["3️⃣ Three", "5️⃣ Five", "7️⃣ Seven", "🔟 Ten"],
+    a: "5️⃣ Five"
+  },
+  {
+    subject: "numbers",
+    q: "How many wheels does a car have? �",
+    o: ["2️⃣ Two", "3️⃣ Three", "4️⃣ Four", "5️⃣ Five"],
+    a: "4️⃣ Four"
+  },
+  {
+    subject: "numbers",
+    q: "How many sides does a triangle have? 🔺",
+    o: ["2️⃣ Two", "3️⃣ Three", "4️⃣ Four", "5️⃣ Five"],
+    a: "3️⃣ Three"
+  },
+  {
+    subject: "numbers",
+    q: "How many days are in a week? 📅",
+    o: ["5️⃣ Five", "6️⃣ Six", "7️⃣ Seven", "8️⃣ Eight"],
+    a: "7️⃣ Seven"
+  },
+  {
+    subject: "numbers",
+    q: "How many colors are in a rainbow? 🌈",
+    o: ["5️⃣ Five", "6️⃣ Six", "7️⃣ Seven", "8️⃣ Eight"],
+    a: "7️⃣ Seven"
+  },
+  {
+    subject: "numbers",
+    q: "How many eyes do you have? 👀",
+    o: ["1️⃣ One", "2️⃣ Two", "3️⃣ Three", "4️⃣ Four"],
+    a: "2️⃣ Two"
+  },
+  {
+    subject: "numbers",
+    q: "How many legs does a spider have? 🕷️",
+    o: ["6️⃣ Six", "8️⃣ Eight", "🔟 Ten", "4️⃣ Four"],
+    a: "8️⃣ Eight"
+  },
+  {
+    subject: "numbers",
+    q: "How many sides does a square have? ⬛",
+    o: ["2️⃣ Two", "3️⃣ Three", "4️⃣ Four", "5️⃣ Five"],
+    a: "4️⃣ Four"
+  },
+  {
+    subject: "numbers",
+    q: "How many candles are on a birthday cake for a 5-year-old? 🎂",
+    o: ["3️⃣ Three", "5️⃣ Five", "7️⃣ Seven", "🔟 Ten"],
+    a: "5️⃣ Five"
+  },
 
-  // Body Parts
-  { q: "👁️ What do we see with?", o: ["👁️", "👂", "👃", "👄"], a: "👁️" },
-  { q: "👂 What do we hear with?", o: ["👁️", "👂", "👃", "👄"], a: "👂" },
-  { q: "🦶 What do we walk with?", o: ["👋", "🦶", "👁️", "👂"], a: "🦶" },
-  { q: "👄 What do we eat with?", o: ["👋", "🦶", "👄", "👃"], a: "👄" },
-  { q: "👃 What do we smell with?", o: ["👁️", "👂", "👃", "👄"], a: "👃" },
+  // Shapes (10)
+  {
+    subject: "shapes",
+    q: "Which shape is round like a ball? ⚽",
+    o: ["🔺 Triangle", "🔵 Circle", "⬛ Square", "⭐ Star"],
+    a: "🔵 Circle"
+  },
+  {
+    subject: "shapes",
+    q: "Which shape has three sides? 🔺",
+    o: ["⬛ Square", "🔺 Triangle", "🔵 Circle", "❤️ Heart"],
+    a: "🔺 Triangle"
+  },
+  {
+    subject: "shapes",
+    q: "Which shape is like a door? 🚪",
+    o: ["🔺 Triangle", "🔵 Circle", "⬛ Rectangle", "⭐ Star"],
+    a: "⬛ Rectangle"
+  },
+  {
+    subject: "shapes",
+    q: "Which shape has four equal sides? ⬛",
+    o: ["🔺 Triangle", "⬛ Square", "🔵 Circle", "❤️ Heart"],
+    a: "⬛ Square"
+  },
+  {
+    subject: "shapes",
+    q: "Which shape is like a kite? 🪁",
+    o: ["🔺 Triangle", "♦️ Diamond", "🔵 Circle", "⬛ Square"],
+    a: "♦️ Diamond"
+  },
+  {
+    subject: "shapes",
+    q: "Which shape is like a pizza slice? 🍕",
+    o: ["🔺 Triangle", "🔵 Circle", "⬛ Square", "⭐ Star"],
+    a: "🔺 Triangle"
+  },
+  {
+    subject: "shapes",
+    q: "Which shape is like a full moon? 🌕",
+    o: ["🔺 Triangle", "🔵 Circle", "⬛ Square", "❤️ Heart"],
+    a: "🔵 Circle"
+  },
+  {
+    subject: "shapes",
+    q: "Which shape is like a traffic sign? 🛑",
+    o: ["🔺 Triangle", "🔵 Circle", "⬛ Square", "🛑 Octagon"],
+    a: "🛑 Octagon"
+  },
+  {
+    subject: "shapes",
+    q: "Which shape is like a star in the sky? ⭐",
+    o: ["🔺 Triangle", "🔵 Circle", "⭐ Star", "⬛ Square"],
+    a: "⭐ Star"
+  },
+  {
+    subject: "shapes",
+    q: "Which shape is like an egg? 🥚",
+    o: ["🔺 Triangle", "🟢 Oval", "🔵 Circle", "⬛ Square"],
+    a: "🟢 Oval"
+  },
 
-  // Shapes & Objects
-  { q: "🔴 What shape?", o: ["🔴", "⬜", "🔺", "⭐"], a: "🔴" },
-  { q: "🌳 Where does it grow?", o: ["🌊", "🌍", "☁️", "🌙"], a: "🌍" },
-  { q: "🏠 Where do we live?", o: ["🌳", "🏠", "🌊", "☁️"], a: "🏠" },
-  { q: "📚 What is this?", o: ["📚", "✏️", "🖍️", "📏"], a: "📚" },
-  { q: "⚽ What shape?", o: ["⬜", "🔺", "⚽", "⭐"], a: "⚽" },
-
-  // Family & Relations
-  { q: "👨 Father emoji?", o: ["👨", "👩", "👦", "👧"], a: "👨" },
-  { q: "👩 Mother emoji?", o: ["👨", "👩", "👦", "👧"], a: "👩" },
-  { q: "👴 Who is this?", o: ["👨", "👩", "👦", "👴"], a: "👴" },
-  { q: "🏠 Who lives here?", o: ["👨‍👩‍👧‍👦", "🐯", "🐠", "🦅"], a: "👨‍👩‍👧‍👦" },
-  { q: "💕 How do we feel?", o: ["😡", "💕", "😢", "😴"], a: "💕" },
-
-  // Daily Activities
-  { q: "🌅 What do we do?", o: ["😴", "🌅 Wake", "🌃", "🍽️"], a: "🌅 Wake" },
-  { q: "🦷 Why brush teeth?", o: ["🦷 Clean", "😴", "🏃", "📚"], a: "🦷 Clean" },
-  { q: "🍽️ When do we eat?", o: ["😴", "🛁", "🍽️", "📚"], a: "🍽️" },
-  { q: "🌙 Night activity?", o: ["🏃", "😴", "📚", "🎮"], a: "😴" },
-  { q: "🎒 What for school?", o: ["🎒", "🍰", "🧸", "📺"], a: "🎒" },
-
-  // Food & Fruits
-  { q: "🍎 Which fruit?", o: ["🍎", "🍌", "🍊", "🍇"], a: "🍎" },
-  { q: "🥛 What color?", o: ["🔴", "🟢", "⚪", "🔵"], a: "⚪" },
-  { q: "🍞 What is this?", o: ["🍞 Food", "🧸", "📚", "👕"], a: "🍞 Food" },
-  { q: "🧄 What happens?", o: ["😄", "😢", "😴", "🏃"], a: "😢" },
-  { q: "🍯 Who makes it?", o: ["🐝", "🐱", "🐄", "🐓"], a: "🐝" }
+  // General Knowledge (10)
+  {
+    subject: "general",
+    q: "What do you use to write on paper? ✏️",
+    o: ["✏️ Pencil", "🍎 Apple", "🚗 Car", "🐕 Dog"],
+    a: "✏️ Pencil"
+  },
+  {
+    subject: "general",
+    q: "What do you drink when you're thirsty? 💧",
+    o: ["🍕 Pizza", "📚 Book", "💧 Water", "🚲 Bicycle"],
+    a: "💧 Water"
+  },
+  {
+    subject: "general",
+    q: "What do you wear on your feet? 👟",
+    o: ["🧢 Hat", "👟 Shoes", "🧤 Gloves", "🧦 Socks"],
+    a: "👟 Shoes"
+  },
+  {
+    subject: "general",
+    q: "What do you use to cut paper? ✂️",
+    o: ["🍴 Fork", "✂️ Scissors", "🥄 Spoon", "📏 Ruler"],
+    a: "✂️ Scissors"
+  },
+  {
+    subject: "general",
+    q: "What shines in the sky at night? 🌙",
+    o: ["☀️ Sun", "🌙 Moon", "⭐ Star", "🌈 Rainbow"],
+    a: "🌙 Moon"
+  },
+  {
+    subject: "general",
+    q: "What do you use to clean your teeth? 🪥",
+    o: ["🧼 Soap", "🪥 Toothbrush", "🍞 Bread", "📺 TV"],
+    a: "🪥 Toothbrush"
+  },
+  {
+    subject: "general",
+    q: "What do you ride to go to school? 🚌",
+    o: ["✈️ Airplane", "🚌 School Bus", "🚢 Ship", "🚂 Train"],
+    a: "🚌 School Bus"
+  },
+  {
+    subject: "general",
+    q: "What do you use to see things far away? 🔭",
+    o: ["📱 Phone", "🔭 Telescope", "🍎 Apple", "📚 Book"],
+    a: "🔭 Telescope"
+  },
+  {
+    subject: "general",
+    q: "What falls from the sky when it rains? ☔",
+    o: ["☔ Raindrops", "❄️ Snowflakes", "🍃 Leaves", "⭐ Stars"],
+    a: "☔ Raindrops"
+  },
+  {
+    subject: "general",
+    q: "What do you use to tell the time? ⏰",
+    o: ["📱 Phone", "⏰ Clock", "📺 TV", "🍪 Cookie"],
+    a: "⏰ Clock"
+  }
 ];
 
 function shuffle(array) {
@@ -286,6 +536,7 @@ function shuffle(array) {
     [array[i], array[j]] = [array[j], array[i]];
   }
 }
+
 shuffle(quizData);
 
 let currentQ = 0;
@@ -298,7 +549,7 @@ let timerInterval;
 function startQuiz() {
   const input = document.getElementById("userNameInput").value.trim();
   if (input === "") {
-    alert("🌟 برائے کرم اپنا نام لکھیں! Please enter your name! 🌟");
+    alert("Please enter your name.");
     return;
   }
   userName = input;
@@ -320,14 +571,21 @@ function startTimer() {
     const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
     const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
     const secs = String(seconds % 60).padStart(2, '0');
-    document.getElementById("timer").innerText = `⏰ ${hrs}:${mins}:${secs}`;
+    document.getElementById("timer").innerText = `⏱️ ${hrs}:${mins}:${secs}`;
   }, 1000);
 }
 
 function loadQuestion() {
   const qData = quizData[currentQ];
-  document.getElementById("qCounter").innerText = `❓ سوال | Question ${currentQ + 1} of ${quizData.length}`;
-  document.getElementById("questionText").innerHTML = qData.q;
+  document.getElementById("qCounter").innerText = `❓ Question ${currentQ + 1} of ${quizData.length}`;
+  document.getElementById("questionText").textContent = qData.q;
+  
+  // Set subject tag
+  const subjectTag = document.getElementById("subjectTag");
+  subjectTag.textContent = qData.subject.toUpperCase();
+  subjectTag.className = "subject-tag " + qData.subject;
+
+  // Render options
   const optionsHTML = qData.o.map(opt =>
     `<label><input type="radio" name="option" value="${opt}"> ${opt}</label>`
   ).join("");
@@ -337,18 +595,19 @@ function loadQuestion() {
 function nextQuestion() {
   const selected = document.querySelector('input[name="option"]:checked');
   if (!selected) {
-    alert("🤔 برائے کرم جواب منتخب کریں! Please select an answer! 🤔");
+    alert("Please select an answer!");
     return;
   }
 
-  const cleanString = (str) => str.replace(/<[^>]*>/g, '').replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}]/gu, '').trim();
-  const selectedValueClean = cleanString(selected.value);
-  const correctAnswerClean = cleanString(quizData[currentQ].a);
+  const selectedValue = selected.value;
+  const correctAnswer = quizData[currentQ].a;
 
-  if (selectedValueClean === correctAnswerClean) {
+  if (selectedValue === correctAnswer) {
     rightAnswers++;
+    alert("Correct! 🎉");
   } else {
     wrongAnswers++;
+    alert(`Oops! The correct answer was: ${correctAnswer}`);
   }
 
   document.getElementById("right").innerText = rightAnswers;
@@ -368,31 +627,68 @@ function showResult() {
   const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
   const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
   const secs = String(seconds % 60).padStart(2, '0');
+
   const totalQuestions = quizData.length;
   const percentage = (rightAnswers / totalQuestions) * 100;
-  
-  let encouragement = "";
-  if (percentage >= 90) {
-    encouragement = "🌟 واہ! آپ تو ستارہ ہیں! Wow! You're a star! 🌟";
-  } else if (percentage >= 70) {
-    encouragement = "🎉 بہت اچھا! Very good! 🎉";
-  } else if (percentage >= 50) {
-    encouragement = "👍 اچھا! مزید محنت کریں! Good! Keep trying! 👍";
+
+  let resultMessage = "";
+  if (percentage >= 80) {
+    resultMessage = "🌟 Amazing Job! You're a Super Star! 🌟";
+  } else if (percentage >= 60) {
+    resultMessage = "👍 Great Work! Keep Learning!";
+  } else if (percentage >= 40) {
+    resultMessage = "😊 Good Try! Practice More!";
   } else {
-    encouragement = "💪 کوئی بات نہیں! مزید پڑھیں! No worries! Study more! 💪";
+    resultMessage = "💪 Don't Worry! You'll Do Better Next Time!";
   }
 
   document.getElementById("resultContainer").innerHTML = `
-    🧒 بچہ | Student: <strong>${userName}</strong><br><br>
-    ${encouragement}<br><br>
-    ✅ صحیح | Correct: <span class="green">${rightAnswers}</span> |
-    ❌ غلط | Wrong: <span class="red">${wrongAnswers}</span><br>
-    <span class="percentage-display">📊 فیصد | Percentage: ${percentage.toFixed(2)}%</span><br>
-    ⏰ وقت | Time Taken: ${hrs}:${mins}:${secs}<br>
-    🎯 کل اسکور | Total Score: ${rightAnswers} / ${quizData.length}<br><br>
-    🌈 شکریہ! آپ نے بہت اچھا کیا! Thank you! You did great! 🌈
+    <div style="font-size: 28px; color: #FF9800; margin-bottom: 20px;">${resultMessage}</div>
+    👶 Name: <strong>${userName}</strong><br><br>
+    ✅ Correct: <span class="green">${rightAnswers}</span> |
+    ❌ Wrong: <span class="red">${wrongAnswers}</span><br>
+    <span class="percentage-display">📊 Score: ${percentage.toFixed(2)}%</span><br>
+    🎯 Total: ${rightAnswers} / ${quizData.length}<br>
+    ⏱️ Time: ${hrs}:${mins}:${secs}<br><br>
+    <strong>Subject Scores:</strong><br>
+    ${getSubjectBreakdown()}
+    <br><br>
+    <button class="btn" onclick="location.reload()" style="background-color: #FF9800;">Play Again 🔄</button>
   `;
 }
+
+function getSubjectBreakdown() {
+  const subjects = {
+    animals: { total: 0, correct: 0 },
+    colors: { total: 0, correct: 0 },
+    numbers: { total: 0, correct: 0 },
+    shapes: { total: 0, correct: 0 },
+    general: { total: 0, correct: 0 }
+  };
+
+  // Count total and correct answers per subject
+  quizData.forEach((q, index) => {
+    subjects[q.subject].total++;
+    if (index < currentQ) {
+      const userAnswer = document.querySelector(`input[name="option"][value="${q.a}"]`)?.checked;
+      if (userAnswer) {
+        subjects[q.subject].correct++;
+      }
+    }
+  });
+
+  // Generate HTML for each subject
+  return Object.entries(subjects).map(([subject, data]) => {
+    const percentage = data.total > 0 ? ((data.correct / data.total) * 100).toFixed(2) : 0;
+    return `
+      <div>
+        <span class="subject-tag ${subject}">${subject.toUpperCase()}</span>: 
+        ${data.correct}/${data.total} (${percentage}%)
+      </div>
+    `;
+  }).join("");
+}
 </script>
+
 </body>
 </html>

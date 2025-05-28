@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Little Learners Quiz - Pakistan</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f0f8ff;
+      line-height: 1.6;
+    }
+    .header, .quiz-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 0 10px; /* Add horizontal padding for smaller screens */
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .center-status {
+      flex: 1 1 100%;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .quiz-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    }
+    .question {
+      font-size: 20px;
+      margin-bottom: 15px; /* Slightly more space */
+      font-weight: bold;
+    }
+    .options label {
+      display: block;
+      margin: 10px 0; /* More vertical space between options */
+      cursor: pointer;
+      padding: 8px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    .options label:hover {
+      background-color: #f9f9f9;
+    }
+    .options label input[type="radio"] {
+      margin-right: 10px;
+      transform: scale(1.2); /* Slightly larger radio buttons */
+    }
+    .options label img {
+      vertical-align: middle;
+      margin-right: 8px;
+      width: 30px;
+      height: 30px;
+    }
+    .btn {
+      display: block; /* Make button full width on smaller screens */
+      width: 100%; /* Full width */
+      margin-top: 25px; /* More space above the button */
+      padding: 12px 20px; /* Larger padding for easier tapping */
+      font-size: 18px; /* Larger font size */
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 30px;
+      font-size: 22px;
+      text-align: center;
+      font-weight: bold;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .green { color: #28a745; } /* Bootstrap success green */
+    .red { color: #dc3545; }   /* Bootstrap danger red */
+    #namePrompt {
+      text-align: center;
+      margin-top: 50px; /* Adjusted for better mobile view */
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      max-width: 500px; /* Limit width for prompt */
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #namePrompt input {
+      padding: 12px;
+      font-size: 18px;
+      width: calc(100% - 24px); /* Account for padding */
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    #namePrompt button {
+      padding: 12px 25px;
+      font-size: 18px;
+      margin-left: 0; /* Remove left margin for better mobile stack */
+      cursor: pointer;
+      background-color: #28a745; /* Green button for start */
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    #namePrompt button:hover {
+      background-color: #218838;
+    }
+    .percentage-display {
+      font-size: 28px;
+      font-weight: bolder;
+      margin: 15px 0;
+      display: block;
+      color: #007bff; /* Highlight percentage */
+    }
+    .bold-content {
+      font-weight: bold;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      .header {
+        font-size: 16px;
+        flex-direction: column; /* Stack header items on small screens */
+        text-align: center;
+      }
+      .center-status {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+      .question {
+        font-size: 18px;
+      }
+      .options label {
+        font-size: 16px;
+      }
+      .btn {
+        font-size: 16px;
+        padding: 10px 15px;
+      }
+      .result {
+        font-size: 18px;
+        padding: 15px;
+      }
+      #namePrompt h2 {
+        font-size: 20px;
+      }
+      #namePrompt input, #namePrompt button {
+        font-size: 16px;
+        padding: 10px;
+      }
+      .percentage-display {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="namePrompt">
+  <h2>Please enter your name to start the Little Learners Quiz</h2>
+  <input type="text" id="userNameInput" placeholder="Enter your name" onkeyup="checkEnter(event)" />
+  <button onclick="startQuiz()">Start Quiz</button>
+</div>
+
+<div id="quizSection" style="display: none;">
+  <div class="header">
+    <div id="qCounter"></div>
+    <div id="timer">⏱️ 00:00:00</div>
+    <div class="center-status">
+      ✅ <span id="right" class="green">0</span> |
+      ❌ <span id="wrong" class="red">0</span>
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <div class="question" id="questionText">Loading...</div>
+    <div class="options" id="optionsContainer"></div>
+    <button class="btn" onclick="nextQuestion()">Next</button>
+  </div>
+
+  <div class="result" id="resultContainer"></div>
+</div>
+
+<script>
+let quizData = [
+  // Animals with Emojis (10 questions)
+  { q: "What sound does a cat make? 🐱", o: ["Woof", "Meow", "Moo", "Roar"], a: "Meow" },
+  { q: "Which animal says 'Woof Woof'? 🐶", o: ["Cat", "Dog", "Bird", "Sheep"], a: "Dog 🐶" },
+  { q: "Which animal gives us milk? 🥛", o: ["Hen", "Cow", "Dog", "Fish"], a: "Cow 🐮" },
+  { q: "What is a baby dog called?", o: ["Kitten", "Chick", "Pup", "Calf"], a: "Pup" },
+  { q: "Which animal has a long trunk? 🐘", o: ["Tiger", "Kangaroo", "Elephant", "Lion"], a: "Elephant 🐘" },
+  { q: "What sound does a duck make? 🦆", o: ["Moo", "Quack", "Baa", "Hiss"], a: "Quack" },
+  { q: "Which animal lives in water and has fins? 🐠", o: ["Bird", "Rabbit", "Fish", "Cow"], a: "Fish 🐠" },
+  { q: "Which animal is known for its long neck? 🦒", o: ["Bear", "Giraffe", "Zebra", "Monkey"], a: "Giraffe 🦒" },
+  { q: "What do bees make? 🐝", o: ["Milk", "Eggs", "Honey", "Wool"], a: "Honey 🍯" },
+  { q: "Which animal lays eggs and has feathers? 🐔", o: ["Dog", "Cat", "Hen", "Horse"], a: "Hen 🐔" },
+
+  // Colors with Emojis (8 questions)
+  { q: "What color is a red apple? 🍎", o: ["Blue", "Green", "Red", "Yellow"], a: "Red 🔴" },
+  { q: "What color is the grass? 🌿", o: ["Brown", "Green", "Orange", "Pink"], a: "Green 🟢" },
+  { q: "What color is a banana? 🍌", o: ["Red", "Blue", "Yellow", "Purple"], a: "Yellow 🟡" },
+  { q: "What color is the sky on a sunny day? ☀️", o: ["Green", "Red", "Blue", "Black"], a: "Blue 🔵" },
+  { q: "Which color is opposite to black?", o: ["Red", "Green", "White", "Yellow"], a: "White ⚪" },
+  { q: "What color is a carrot? 🥕", o: ["Red", "Orange", "Yellow", "Brown"], a: "Orange 🟠" },
+  { q: "What color are most leaves in autumn? 🍂", o: ["Green", "Blue", "Yellow", "Purple"], a: "Yellow 🟡" },
+  { q: "What color is chocolate? 🍫", o: ["Pink", "Brown", "White", "Blue"], a: "Brown 🟫" },
+
+  // English Alphabets (6 questions)
+  { q: "Which letter comes after **A**?", o: ["**C**", "**B**", "**D**", "**E**"], a: "**B**" },
+  { q: "What is the first letter of 'Cat' 🐱?", o: ["**A**", "**B**", "**C**", "**D**"], a: "**C**" },
+  { q: "Which letter comes before **F**?", o: ["**E**", "**G**", "**H**", "**I**"], a: "**E**" },
+  { q: "What is the last letter of 'Ball' ⚽?", o: ["**A**", "**L**", "**B**", "**T**"], a: "**L**" },
+  { q: "Which letter is used for 'Elephant' 🐘?", o: ["**A**", "**E**", "**I**", "**O**"], a: "**E**" },
+  { q: "How many letters are in the word 'DOG' 🐶?", o: ["1", "2", "3", "4"], a: "3" },
+
+  // Urdu Alphabets (5 questions)
+  { q: "اردو حرف **ا** کے بعد کونسا حرف آتا ہے؟", o: ["**ٹ**", "**ب**", "**ج**", "**س**"], a: "**ب**" },
+  { q: "حرف 'الف' سے کونسا لفظ شروع ہوتا ہے؟", o: ["بیل 🐄", "انگور 🍇", "بطخ 🦆", "چیتا 🐅"], a: "انگور 🍇" },
+  { q: "اردو میں 'با' حرف کا ایک لفظ بتائیں؟", o: ["انار", "بلی", "ٹیلی فون", "جہاز"], a: "بلی 🐈" },
+  { q: "حرف 'س' سے شروع ہونے والا پھل کونسا ہے؟", o: ["سیب 🍎", "آم 🥭", "کیلا 🍌", "مالٹا 🍊"], a: "سیب 🍎" },
+  { q: "اردو حرف 'ر' کے بعد کونسا حرف آتا ہے؟", o: ["ڑ", "ل", "ز", "م"], a: "ڑ" },
+
+  // Numbers (7 questions)
+  { q: "How many fingers 🖐️ do you have on one hand?", o: ["3", "4", "5", "6"], a: "5" },
+  { q: "What number comes after **1**? ☝️", o: ["0", "2", "3", "4"], a: "2" },
+  { q: "What is **1** ➕ **1**?", o: ["0", "1", "2", "3"], a: "2" },
+  { q: "How many wheels 🚲 does a bicycle have?", o: ["1", "2", "3", "4"], a: "2" },
+  { q: "Count the number of sides in a triangle: 🔺", o: ["2", "3", "4", "5"], a: "3" },
+  { q: "What number comes before **5**?", o: ["3", "4", "6", "7"], a: "4" },
+  { q: "How many eyes do you have? 👀", o: ["0", "1", "2", "3"], a: "2" },
+
+  // Shapes with Emojis (5 questions)
+  { q: "Which shape has no corners? ⭕", o: ["Square ⬛", "Triangle 🔺", "Circle 🔵", "Rectangle 🟨"], a: "Circle 🔵" },
+  { q: "How many sides does a square 🟩 have?", o: ["2", "3", "4", "5"], a: "4" },
+  { q: "Which shape looks like a slice of pizza? 🍕", o: ["Circle", "Square", "Triangle", "Star"], a: "Triangle 🔺" },
+  { q: "What shape is a ball? ⚽", o: ["Cube", "Cylinder", "Sphere", "Pyramid"], a: "Sphere 🌐" },
+  { q: "Which shape has 3 sides and 3 corners?", o: ["Square", "Circle", "Triangle", "Rectangle"], a: "Triangle 🔺" },
+
+  // Body Parts with Emojis (4 questions)
+  { q: "Which body part do you use to see? 👀", o: ["Nose 👃", "Ears 👂", "Eyes 👀", "Mouth 👄"], a: "Eyes 👀" },
+  { q: "Which body part do you use to eat? 🍽️", o: ["Hand ✋", "Foot 🦶", "Mouth 👄", "Eye 👁️"], a: "Mouth 👄" },
+  { q: "You hear with your...? 👂", o: ["Hands", "Ears", "Legs", "Fingers"], a: "Ears 👂" },
+  { q: "Which body part helps you walk and run? 🦵", o: ["Arms", "Legs", "Head", "Shoulders"], a: "Legs 🦵" },
+
+  // Food and Fruits with Emojis (5 questions)
+  { q: "Which fruit is yellow and monkeys love to eat? 🍌", o: ["Apple 🍎", "Banana 🍌", "Grapes 🍇", "Orange 🍊"], a: "Banana 🍌" },
+  { q: "Which is a vegetable? 🥕", o: ["Mango 🥭", "Carrot 🥕", "Cherry 🍒", "Strawberry 🍓"], a: "Carrot 🥕" },
+  { q: "What do you drink when you are thirsty? 💧", o: ["Juice 🧃", "Milk 🥛", "Water 💧", "Soup 🥣"], a: "Water 💧" },
+  { q: "What is the color of a tomato? 🍅", o: ["Green", "Blue", "Red", "Yellow"], a: "Red 🔴" },
+  { q: "What do we eat for breakfast? 🍳", o: ["Dinner", "Lunch", "Breakfast", "Snack"], a: "Breakfast 🥞" },
+
+  // General Knowledge (Simple, Pakistan context) (5 questions)
+  { q: "Who is the founder of Pakistan? 🇵🇰", o: ["Allama Iqbal", "Liaquat Ali Khan", "Muhammad Ali Jinnah", "Fatima Jinnah"], a: "Muhammad Ali Jinnah" },
+  { q: "What is the national animal of Pakistan? ⛰️", o: ["Tiger", "Lion", "Markhor", "Snow Leopard"], a: "Markhor" },
+  { q: "What is the national flower of Pakistan? 🌸", o: ["Rose", "Jasmine", "Lily", "Tulip"], a: "Jasmine (چنبیلی) 🌸" },
+  { q: "What do we use to write? ✍️", o: ["Spoon 🥄", "Fork 🍴", "Pencil ✏️", "Comb 💈"], a: "Pencil ✏️" },
+  { q: "What season is it when it snows? ❄️", o: ["Summer ☀️", "Spring 🌷", "Autumn 🍂", "Winter ☃️"], a: "Winter ☃️" }
+];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+shuffle(quizData);
+
+let currentQ = 0;
+let rightAnswers = 0;
+let wrongAnswers = 0;
+let seconds = 0;
+let userName = "";
+let timerInterval;
+
+function startQuiz() {
+  const input = document.getElementById("userNameInput").value.trim();
+  if (input === "") {
+    alert("Please enter your name.");
+    return;
+  }
+  userName = input;
+  document.getElementById("namePrompt").style.display = "none";
+  document.getElementById("quizSection").style.display = "block";
+  loadQuestion();
+  startTimer();
+}
+
+// Function to handle Enter key press
+function checkEnter(event) {
+  if (event.key === "Enter") {
+    startQuiz();
+  }
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    seconds++;
+    const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+    const secs = String(seconds % 60).padStart(2, '0');
+    document.getElementById("timer").innerText = `⏱️ ${hrs}:${mins}:${secs}`;
+  }, 1000);
+}
+
+function loadQuestion() {
+  const qData = quizData[currentQ];
+  document.getElementById("qCounter").innerText = `❓ Question ${currentQ + 1} of ${quizData.length}`;
+  document.getElementById("questionText").innerHTML = qData.q;
+
+  const optionsHTML = qData.o.map(opt =>
+    `<label><input type="radio" name="option" value="${opt}"> ${opt}</label>`
+  ).join("");
+  document.getElementById("optionsContainer").innerHTML = optionsHTML;
+}
+
+function nextQuestion() {
+  const selected = document.querySelector('input[name="option"]:checked');
+  if (!selected) {
+    alert("Please select an answer!");
+    return;
+  }
+
+  // A more robust way to clean HTML tags and emojis for comparison
+  const cleanString = (str) => str.replace(/<[^>]*>/g, '').replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}]/gu, '').trim();
+
+  const selectedValueClean = cleanString(selected.value);
+  const correctAnswerClean = cleanString(quizData[currentQ].a);
+
+  if (selectedValueClean === correctAnswerClean) {
+    rightAnswers++;
+  } else {
+    wrongAnswers++;
+  }
+
+  document.getElementById("right").innerText = rightAnswers;
+  document.getElementById("wrong").innerText = wrongAnswers;
+
+  currentQ++;
+  if (currentQ < quizData.length) {
+    loadQuestion();
+  } else {
+    clearInterval(timerInterval);
+    showResult();
+  }
+}
+
+function showResult() {
+  document.querySelector(".quiz-container").style.display = "none";
+  const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+  const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+  const secs = String(seconds % 60).padStart(2, '0');
+
+  const totalQuestions = quizData.length;
+  const percentage = (rightAnswers / totalQuestions) * 100;
+
+  document.getElementById("resultContainer").innerHTML = `
+    👦 Student: <strong>${userName}</strong><br><br>
+    ✅ Correct: <span class="green">${rightAnswers}</span> |
+    ❌ Wrong: <span class="red">${wrongAnswers}</span><br>
+    <span class="percentage-display">📊 Percentage: ${percentage.toFixed(2)}%</span><br>
+    🎯 Total Score: ${rightAnswers} / ${quizData.length}<br>
+    ⏱️ Time Taken: ${hrs}:${mins}:${secs}
+  `;
+}
+</script>
+
+</body>
+</html>
