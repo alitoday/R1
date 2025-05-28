@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MDCAT Practice Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f0f8ff;
+      line-height: 1.6;
+    }
+    .header, .quiz-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 0 10px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .center-status {
+      flex: 1 1 100%;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .quiz-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .question {
+      font-size: 20px;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+    .options label {
+      display: block;
+      margin: 10px 0;
+      cursor: pointer;
+      padding: 8px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    .options label:hover {
+      background-color: #f9f9f9;
+    }
+    .options label input[type="radio"] {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      margin-top: 25px;
+      padding: 12px 20px;
+      font-size: 18px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 30px;
+      font-size: 22px;
+      text-align: center;
+      font-weight: bold;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .green { color: #28a745; }
+    .red { color: #dc3545; }
+    #namePrompt {
+      text-align: center;
+      margin-top: 50px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #namePrompt input {
+      padding: 12px;
+      font-size: 18px;
+      width: calc(100% - 24px);
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    #namePrompt button {
+      padding: 12px 25px;
+      font-size: 18px;
+      margin-left: 0;
+      cursor: pointer;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    #namePrompt button:hover {
+      background-color: #218838;
+    }
+    .percentage-display {
+      font-size: 28px;
+      font-weight: bolder;
+      margin: 15px 0;
+      display: block;
+      color: #007bff;
+    }
+    .bold-content {
+      font-weight: bold;
+    }
+    .subject-tag {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .biology { background-color: #d4edda; color: #155724; }
+    .chemistry { background-color: #cce5ff; color: #004085; }
+    .physics { background-color: #fff3cd; color: #856404; }
+    .english { background-color: #f8d7da; color: #721c24; }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      .header {
+        font-size: 16px;
+        flex-direction: column;
+        text-align: center;
+      }
+      .center-status {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+      .question {
+        font-size: 18px;
+      }
+      .options label {
+        font-size: 16px;
+      }
+      .btn {
+        font-size: 16px;
+        padding: 10px 15px;
+      }
+      .result {
+        font-size: 18px;
+        padding: 15px;
+      }
+      #namePrompt h2 {
+        font-size: 20px;
+      }
+      #namePrompt input, #namePrompt button {
+        font-size: 16px;
+        padding: 10px;
+      }
+      .percentage-display {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="namePrompt">
+  <h2>Please enter your name to start the MDCAT Quiz</h2>
+  <input type="text" id="userNameInput" placeholder="Enter your name" onkeyup="checkEnter(event)" />
+  <button onclick="startQuiz()">Start Quiz</button>
+</div>
+
+<div id="quizSection" style="display: none;">
+  <div class="header">
+    <div id="qCounter"></div>
+    <div id="timer">⏱️ 00:00:00</div>
+    <div class="center-status">
+      ✅ <span id="right" class="green">0</span> |
+      ❌ <span id="wrong" class="red">0</span>
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <div id="subjectTag" class="subject-tag"></div>
+    <div class="question" id="questionText">Loading...</div>
+    <div class="options" id="optionsContainer"></div>
+    <button class="btn" onclick="nextQuestion()">Next</button>
+  </div>
+
+  <div class="result" id="resultContainer"></div>
+</div>
+
+<script>
+let quizData = [
+  // Biology Questions (15)
+  {
+    subject: "biology",
+    q: "Which of the following is the basic unit of life?",
+    o: ["Atom", "Cell", "Tissue", "Organ"],
+    a: "Cell"
+  },
+  {
+    subject: "biology",
+    q: "Photosynthesis occurs in which organelle?",
+    o: ["Mitochondria", "Nucleus", "Chloroplast", "Ribosome"],
+    a: "Chloroplast"
+  },
+  {
+    subject: "biology",
+    q: "Which blood cells are responsible for carrying oxygen?",
+    o: ["Leukocytes", "Erythrocytes", "Platelets", "Lymphocytes"],
+    a: "Erythrocytes"
+  },
+  {
+    subject: "biology",
+    q: "The process by which plants lose water through their leaves is called:",
+    o: ["Transpiration", "Respiration", "Photosynthesis", "Osmosis"],
+    a: "Transpiration"
+  },
+  {
+    subject: "biology",
+    q: "Which of these is NOT a function of the liver?",
+    o: ["Detoxification", "Protein synthesis", "Insulin production", "Bile production"],
+    a: "Insulin production"
+  },
+  {
+    subject: "biology",
+    q: "The functional unit of the kidney is called:",
+    o: ["Neuron", "Nephron", "Alveoli", "Villus"],
+    a: "Nephron"
+  },
+  {
+    subject: "biology",
+    q: "Which of these is a sex-linked disorder?",
+    o: ["Down syndrome", "Hemophilia", "Cystic fibrosis", "Sickle cell anemia"],
+    a: "Hemophilia"
+  },
+  {
+    subject: "biology",
+    q: "The largest part of the human brain is the:",
+    o: ["Cerebellum", "Cerebrum", "Medulla oblongata", "Hypothalamus"],
+    a: "Cerebrum"
+  },
+  {
+    subject: "biology",
+    q: "Which vitamin is produced by the human skin when exposed to sunlight?",
+    o: ["Vitamin A", "Vitamin B12", "Vitamin C", "Vitamin D"],
+    a: "Vitamin D"
+  },
+  {
+    subject: "biology",
+    q: "The process of cell division that results in four daughter cells each with half the chromosomes of the parent cell is called:",
+    o: ["Mitosis", "Meiosis", "Binary fission", "Budding"],
+    a: "Meiosis"
+  },
+  {
+    subject: "biology",
+    q: "Which of these is NOT a component of DNA?",
+    o: ["Adenine", "Thymine", "Uracil", "Cytosine"],
+    a: "Uracil"
+  },
+  {
+    subject: "biology",
+    q: "The hormone insulin is produced by:",
+    o: ["Liver", "Pancreas", "Adrenal gland", "Thyroid gland"],
+    a: "Pancreas"
+  },
+  {
+    subject: "biology",
+    q: "Which part of the plant absorbs water and minerals from the soil?",
+    o: ["Stem", "Leaves", "Root hairs", "Flowers"],
+    a: "Root hairs"
+  },
+  {
+    subject: "biology",
+    q: "The process by which green plants make their own food using sunlight is called:",
+    o: ["Respiration", "Transpiration", "Photosynthesis", "Fermentation"],
+    a: "Photosynthesis"
+  },
+  {
+    subject: "biology",
+    q: "Which of these is the correct sequence of biological organization from simplest to most complex?",
+    o: ["Organ → Tissue → Cell → Organism", "Cell → Tissue → Organ → Organ System", "Organ System → Organ → Tissue → Cell", "Tissue → Cell → Organ → Organ System"],
+    a: "Cell → Tissue → Organ → Organ System"
+  },
+
+  // Chemistry Questions (15)
+  {
+    subject: "chemistry",
+    q: "What is the pH value of pure water?",
+    o: ["0", "7", "10", "14"],
+    a: "7"
+  },
+  {
+    subject: "chemistry",
+    q: "Which of these is NOT a noble gas?",
+    o: ["Helium", "Neon", "Chlorine", "Argon"],
+    a: "Chlorine"
+  },
+  {
+    subject: "chemistry",
+    q: "The chemical formula of water is:",
+    o: ["HO", "H2O", "H2O2", "H3O"],
+    a: "H2O"
+  },
+  {
+    subject: "chemistry",
+    q: "Which of these elements is a metal?",
+    o: ["Sulfur", "Oxygen", "Sodium", "Nitrogen"],
+    a: "Sodium"
+  },
+  {
+    subject: "chemistry",
+    q: "The process of converting a solid directly to gas is called:",
+    o: ["Evaporation", "Sublimation", "Condensation", "Deposition"],
+    a: "Sublimation"
+  },
+  {
+    subject: "chemistry",
+    q: "Which of these is the lightest element?",
+    o: ["Oxygen", "Hydrogen", "Helium", "Lithium"],
+    a: "Hydrogen"
+  },
+  {
+    subject: "chemistry",
+    q: "The atomic number represents the number of:",
+    o: ["Protons", "Neutrons", "Electrons", "Nucleons"],
+    a: "Protons"
+  },
+  {
+    subject: "chemistry",
+    q: "Which of these is an example of a chemical change?",
+    o: ["Melting of ice", "Dissolving sugar in water", "Burning of wood", "Breaking of glass"],
+    a: "Burning of wood"
+  },
+  {
+    subject: "chemistry",
+    q: "The most abundant gas in Earth's atmosphere is:",
+    o: ["Oxygen", "Carbon dioxide", "Nitrogen", "Argon"],
+    a: "Nitrogen"
+  },
+  {
+    subject: "chemistry",
+    q: "Which of these is a strong acid?",
+    o: ["Acetic acid", "Citric acid", "Hydrochloric acid", "Carbonic acid"],
+    a: "Hydrochloric acid"
+  },
+  {
+    subject: "chemistry",
+    q: "The process of gaining electrons is called:",
+    o: ["Oxidation", "Reduction", "Neutralization", "Combustion"],
+    a: "Reduction"
+  },
+  {
+    subject: "chemistry",
+    q: "Which of these is NOT an organic compound?",
+    o: ["Methane", "Ethanol", "Sodium chloride", "Glucose"],
+    a: "Sodium chloride"
+  },
+  {
+    subject: "chemistry",
+    q: "The pH of an acidic solution is:",
+    o: ["Less than 7", "7", "Greater than 7", "14"],
+    a: "Less than 7"
+  },
+  {
+    subject: "chemistry",
+    q: "Which gas is produced during photosynthesis?",
+    o: ["Carbon dioxide", "Nitrogen", "Oxygen", "Hydrogen"],
+    a: "Oxygen"
+  },
+  {
+    subject: "chemistry",
+    q: "The chemical symbol for gold is:",
+    o: ["Go", "Gd", "Au", "Ag"],
+    a: "Au"
+  },
+
+  // Physics Questions (15)
+  {
+    subject: "physics",
+    q: "The SI unit of force is:",
+    o: ["Joule", "Watt", "Newton", "Pascal"],
+    a: "Newton"
+  },
+  {
+    subject: "physics",
+    q: "Which of these is a vector quantity?",
+    o: ["Mass", "Speed", "Distance", "Velocity"],
+    a: "Velocity"
+  },
+  {
+    subject: "physics",
+    q: "The acceleration due to gravity on Earth is approximately:",
+    o: ["9.8 m/s²", "6.7 m/s²", "10.2 m/s²", "5.5 m/s²"],
+    a: "9.8 m/s²"
+  },
+  {
+    subject: "physics",
+    q: "Which law states that 'for every action, there is an equal and opposite reaction'?",
+    o: ["Newton's First Law", "Newton's Second Law", "Newton's Third Law", "Ohm's Law"],
+    a: "Newton's Third Law"
+  },
+  {
+    subject: "physics",
+    q: "The unit of electric current is:",
+    o: ["Volt", "Watt", "Ampere", "Ohm"],
+    a: "Ampere"
+  },
+  {
+    subject: "physics",
+    q: "Which of these electromagnetic waves has the longest wavelength?",
+    o: ["Gamma rays", "X-rays", "Visible light", "Radio waves"],
+    a: "Radio waves"
+  },
+  {
+    subject: "physics",
+    q: "The bending of light as it passes from one medium to another is called:",
+    o: ["Reflection", "Refraction", "Diffraction", "Dispersion"],
+    a: "Refraction"
+  },
+  {
+    subject: "physics",
+    q: "Which of these materials is the best conductor of electricity?",
+    o: ["Rubber", "Wood", "Copper", "Glass"],
+    a: "Copper"
+  },
+  {
+    subject: "physics",
+    q: "The energy stored in a stretched spring is called:",
+    o: ["Kinetic energy", "Potential energy", "Thermal energy", "Nuclear energy"],
+    a: "Potential energy"
+  },
+  {
+    subject: "physics",
+    q: "The SI unit of power is:",
+    o: ["Joule", "Watt", "Volt", "Ampere"],
+    a: "Watt"
+  },
+  {
+    subject: "physics",
+    q: "Which of these is NOT a fundamental force of nature?",
+    o: ["Gravitational force", "Electromagnetic force", "Strong nuclear force", "Frictional force"],
+    a: "Frictional force"
+  },
+  {
+    subject: "physics",
+    q: "The speed of light in vacuum is approximately:",
+    o: ["3 × 10⁶ m/s", "3 × 10⁸ m/s", "3 × 10¹⁰ m/s", "3 × 10¹² m/s"],
+    a: "3 × 10⁸ m/s"
+  },
+  {
+    subject: "physics",
+    q: "Which law states that pressure and volume of a gas are inversely proportional at constant temperature?",
+    o: ["Boyle's Law", "Charles's Law", "Avogadro's Law", "Gay-Lussac's Law"],
+    a: "Boyle's Law"
+  },
+  {
+    subject: "physics",
+    q: "The process by which a liquid changes into a gas at its boiling point is called:",
+    o: ["Evaporation", "Condensation", "Vaporization", "Sublimation"],
+    a: "Vaporization"
+  },
+  {
+    subject: "physics",
+    q: "Which of these is the correct formula for calculating work?",
+    o: ["W = F × d", "W = m × a", "W = F × a", "W = m × v"],
+    a: "W = F × d"
+  },
+
+  // English Questions (5)
+  {
+    subject: "english",
+    q: "Choose the correct sentence:",
+    o: ["She don't like apples.", "She doesn't likes apples.", "She doesn't like apples.", "She not like apples."],
+    a: "She doesn't like apples."
+  },
+  {
+    subject: "english",
+    q: "Which of these is a synonym for 'happy'?",
+    o: ["Sad", "Joyful", "Angry", "Tired"],
+    a: "Joyful"
+  },
+  {
+    subject: "english",
+    q: "Identify the correct spelling:",
+    o: ["Accomodate", "Acommodate", "Accommodate", "Acomodate"],
+    a: "Accommodate"
+  },
+  {
+    subject: "english",
+    q: "Which word is the antonym of 'ancient'?",
+    o: ["Old", "Historic", "Modern", "Traditional"],
+    a: "Modern"
+  },
+  {
+    subject: "english",
+    q: "Choose the correct preposition: 'She is allergic ___ cats.'",
+    o: ["to", "for", "with", "at"],
+    a: "to"
+  }
+];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+shuffle(quizData);
+
+let currentQ = 0;
+let rightAnswers = 0;
+let wrongAnswers = 0;
+let seconds = 0;
+let userName = "";
+let timerInterval;
+
+function startQuiz() {
+  const input = document.getElementById("userNameInput").value.trim();
+  if (input === "") {
+    alert("Please enter your name.");
+    return;
+  }
+  userName = input;
+  document.getElementById("namePrompt").style.display = "none";
+  document.getElementById("quizSection").style.display = "block";
+  loadQuestion();
+  startTimer();
+}
+
+function checkEnter(event) {
+  if (event.key === "Enter") {
+    startQuiz();
+  }
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    seconds++;
+    const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+    const secs = String(seconds % 60).padStart(2, '0');
+    document.getElementById("timer").innerText = `⏱️ ${hrs}:${mins}:${secs}`;
+  }, 1000);
+}
+
+function loadQuestion() {
+  const qData = quizData[currentQ];
+  document.getElementById("qCounter").innerText = `❓ Question ${currentQ + 1} of ${quizData.length}`;
+  document.getElementById("questionText").textContent = qData.q;
+  
+  // Set subject tag
+  const subjectTag = document.getElementById("subjectTag");
+  subjectTag.textContent = qData.subject.toUpperCase();
+  subjectTag.className = "subject-tag " + qData.subject;
+
+  // Render options
+  const optionsHTML = qData.o.map(opt =>
+    `<label><input type="radio" name="option" value="${opt}"> ${opt}</label>`
+  ).join("");
+  document.getElementById("optionsContainer").innerHTML = optionsHTML;
+}
+
+function nextQuestion() {
+  const selected = document.querySelector('input[name="option"]:checked');
+  if (!selected) {
+    alert("Please select an answer!");
+    return;
+  }
+
+  const selectedValue = selected.value;
+  const correctAnswer = quizData[currentQ].a;
+
+  if (selectedValue === correctAnswer) {
+    rightAnswers++;
+  } else {
+    wrongAnswers++;
+  }
+
+  document.getElementById("right").innerText = rightAnswers;
+  document.getElementById("wrong").innerText = wrongAnswers;
+
+  currentQ++;
+  if (currentQ < quizData.length) {
+    loadQuestion();
+  } else {
+    clearInterval(timerInterval);
+    showResult();
+  }
+}
+
+function showResult() {
+  document.querySelector(".quiz-container").style.display = "none";
+  const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+  const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+  const secs = String(seconds % 60).padStart(2, '0');
+
+  const totalQuestions = quizData.length;
+  const percentage = (rightAnswers / totalQuestions) * 100;
+
+  document.getElementById("resultContainer").innerHTML = `
+    👨‍🎓 Student: <strong>${userName}</strong><br><br>
+    ✅ Correct: <span class="green">${rightAnswers}</span> |
+    ❌ Wrong: <span class="red">${wrongAnswers}</span><br>
+    <span class="percentage-display">📊 Percentage: ${percentage.toFixed(2)}%</span><br>
+    🎯 Total Score: ${rightAnswers} / ${quizData.length}<br>
+    ⏱️ Time Taken: ${hrs}:${mins}:${secs}<br><br>
+    <strong>Subject-wise Breakdown:</strong><br>
+    ${getSubjectBreakdown()}
+  `;
+}
+
+function getSubjectBreakdown() {
+  const subjects = {
+    biology: { total: 0, correct: 0 },
+    chemistry: { total: 0, correct: 0 },
+    physics: { total: 0, correct: 0 },
+    english: { total: 0, correct: 0 }
+  };
+
+  // Count total and correct answers per subject
+  quizData.forEach((q, index) => {
+    subjects[q.subject].total++;
+    if (index < currentQ) {
+      const userAnswer = document.querySelector(`input[name="option"][value="${q.a}"]`)?.checked;
+      if (userAnswer) {
+        subjects[q.subject].correct++;
+      }
+    }
+  });
+
+  // Generate HTML for each subject
+  return Object.entries(subjects).map(([subject, data]) => {
+    const percentage = data.total > 0 ? ((data.correct / data.total) * 100).toFixed(2) : 0;
+    return `
+      <div>
+        <span class="subject-tag ${subject}">${subject.toUpperCase()}</span>: 
+        ${data.correct}/${data.total} (${percentage}%)
+      </div>
+    `;
+  }).join("");
+}
+</script>
+
+</body>
+</html>

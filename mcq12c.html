@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MDCAT Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f0f8ff;
+      line-height: 1.6;
+    }
+    .header, .quiz-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 0 10px; /* Add horizontal padding for smaller screens */
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .center-status {
+      flex: 1 1 100%;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .quiz-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    }
+    .question {
+      font-size: 20px;
+      margin-bottom: 15px; /* Slightly more space */
+      font-weight: bold;
+    }
+    .options label {
+      display: block;
+      margin: 10px 0; /* More vertical space between options */
+      cursor: pointer;
+      padding: 8px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    .options label:hover {
+      background-color: #f9f9f9;
+    }
+    .options label input[type="radio"] {
+      margin-right: 10px;
+      transform: scale(1.2); /* Slightly larger radio buttons */
+    }
+    .options label img {
+      vertical-align: middle;
+      margin-right: 8px;
+      width: 30px;
+      height: 30px;
+    }
+    .btn {
+      display: block; /* Make button full width on smaller screens */
+      width: 100%; /* Full width */
+      margin-top: 25px; /* More space above the button */
+      padding: 12px 20px; /* Larger padding for easier tapping */
+      font-size: 18px; /* Larger font size */
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 30px;
+      font-size: 22px;
+      text-align: center;
+      font-weight: bold;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .green { color: #28a745; } /* Bootstrap success green */
+    .red { color: #dc3545; }   /* Bootstrap danger red */
+    #namePrompt {
+      text-align: center;
+      margin-top: 50px; /* Adjusted for better mobile view */
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      max-width: 500px; /* Limit width for prompt */
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #namePrompt input {
+      padding: 12px;
+      font-size: 18px;
+      width: calc(100% - 24px); /* Account for padding */
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    #namePrompt button {
+      padding: 12px 25px;
+      font-size: 18px;
+      margin-left: 0; /* Remove left margin for better mobile stack */
+      cursor: pointer;
+      background-color: #28a745; /* Green button for start */
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+    }
+    #namePrompt button:hover {
+      background-color: #218838;
+    }
+    .percentage-display {
+      font-size: 28px;
+      font-weight: bolder;
+      margin: 15px 0;
+      display: block;
+      color: #007bff; /* Highlight percentage */
+    }
+    .bold-content {
+      font-weight: bold;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      .header {
+        font-size: 16px;
+        flex-direction: column; /* Stack header items on small screens */
+        text-align: center;
+      }
+      .center-status {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+      .question {
+        font-size: 18px;
+      }
+      .options label {
+        font-size: 16px;
+      }
+      .btn {
+        font-size: 16px;
+        padding: 10px 15px;
+      }
+      .result {
+        font-size: 18px;
+        padding: 15px;
+      }
+      #namePrompt h2 {
+        font-size: 20px;
+      }
+      #namePrompt input, #namePrompt button {
+        font-size: 16px;
+        padding: 10px;
+      }
+      .percentage-display {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="namePrompt">
+  <h2>Please enter your name to start the MDCAT Quiz</h2>
+  <input type="text" id="userNameInput" placeholder="Enter your name" onkeyup="checkEnter(event)" />
+  <button onclick="startQuiz()">Start Quiz</button>
+</div>
+
+<div id="quizSection" style="display: none;">
+  <div class="header">
+    <div id="qCounter"></div>
+    <div id="timer">⏱️ 00:00:00</div>
+    <div class="center-status">
+      ✅ <span id="right" class="green">0</span> |
+      ❌ <span id="wrong" class="red">0</span>
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <div class="question" id="questionText">Loading...</div>
+    <div class="options" id="optionsContainer"></div>
+    <button class="btn" onclick="nextQuestion()">Next</button>
+  </div>
+
+  <div class="result" id="resultContainer"></div>
+</div>
+
+<script>
+let quizData = [
+  // Physics (15 questions)
+  { q: "What is the SI unit of electric current?", o: ["Volt", "Ohm", "Ampere", "Watt"], a: "Ampere" },
+  { q: "Which of the following is a scalar quantity?", o: ["Force", "Velocity", "Work", "Acceleration"], a: "Work" },
+  { q: "According to Ohm's Law, V = ?", o: ["IR", "I/R", "R/I", "I²R"], a: "IR" },
+  { q: "What is the formula for kinetic energy?", o: ["mgh", "½mv²", "Pt", "F=ma"], a: "½mv²" },
+  { q: "The process of converting AC to DC is called:", o: ["Amplification", "Rectification", "Modulation", "Demodulation"], a: "Rectification" },
+  { q: "Which type of mirror is used as a rear-view mirror in vehicles?", o: ["Plane mirror", "Concave mirror", "Convex mirror", "Cylindrical mirror"], a: "Convex mirror" },
+  { q: "The phenomenon of light bending as it passes from one medium to another is called:", o: ["Reflection", "Refraction", "Diffraction", "Interference"], a: "Refraction" },
+  { q: "What is the unit of power?", o: ["Joule", "Newton", "Watt", "Pascal"], a: "Watt" },
+  { q: "A device that converts chemical energy into electrical energy is a:", o: ["Motor", "Generator", "Battery", "Transformer"], a: "Battery" },
+  { q: "Which fundamental force is responsible for the binding of protons and neutrons in an atomic nucleus?", o: ["Gravitational force", "Electromagnetic force", "Strong nuclear force", "Weak nuclear force"], a: "Strong nuclear force" },
+  { q: "What is the unit of frequency?", o: ["Meter", "Second", "Hertz", "Kilogram"], a: "Hertz" },
+  { q: "Which of the following colors has the shortest wavelength in the visible spectrum?", o: ["Red", "Green", "Blue", "Violet"], a: "Violet" },
+  { q: "The law of conservation of momentum states that:", o: ["Momentum is always increasing", "Momentum is always decreasing", "Total momentum of an isolated system remains constant", "Momentum is converted into energy"], a: "Total momentum of an isolated system remains constant" },
+  { q: "In a series circuit, what remains constant across all components?", o: ["Voltage", "Current", "Resistance", "Power"], a: "Current" },
+  { q: "The speed of light in a vacuum is approximately:", o: ["3 x 10^5 m/s", "3 x 10^6 m/s", "3 x 10^7 m/s", "3 x 10^8 m/s"], a: "3 x 10^8 m/s" },
+
+  // Chemistry (15 questions)
+  { q: "What is the chemical symbol for gold?", o: ["Ag", "Au", "Fe", "Cu"], a: "Au" },
+  { q: "Which gas is most abundant in Earth's atmosphere?", o: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Argon"], a: "Nitrogen" },
+  { q: "What is the pH of a neutral solution at 25°C?", o: ["0", "7", "14", "Depends on concentration"], a: "7" },
+  { q: "The process of a solid directly changing into a gas without passing through a liquid state is called:", o: ["Melting", "Boiling", "Sublimation", "Condensation"], a: "Sublimation" },
+  { q: "Which of the following is a noble gas?", o: ["Oxygen", "Chlorine", "Helium", "Nitrogen"], a: "Helium" },
+  { q: "What is the chemical formula for water?", o: ["CO2", "H2SO4", "NaCl", "H2O"], a: "H2O" },
+  { q: "Which bond type involves the sharing of electrons?", o: ["Ionic bond", "Covalent bond", "Metallic bond", "Hydrogen bond"], a: "Covalent bond" },
+  { q: "The atomic number of an element is determined by the number of:", o: ["Neutrons", "Protons", "Electrons", "Isotopes"], a: "Protons" },
+  { q: "Which acid is present in vinegar?", o: ["Citric acid", "Lactic acid", "Acetic acid", "Sulfuric acid"], a: "Acetic acid" },
+  { q: "What is the main component of natural gas?", o: ["Propane", "Butane", "Methane", "Ethane"], a: "Methane" },
+  { q: "The process of a liquid turning into a gas is called:", o: ["Freezing", "Melting", "Evaporation", "Condensation"], a: "Evaporation" },
+  { q: "What is the empirical formula for glucose (C6H12O6)?", o: ["CHO", "CH2O", "C2H4O2", "C6H12O6"], a: "CH2O" },
+  { q: "Which of the following is an example of a strong acid?", o: ["Acetic acid", "Carbonic acid", "Hydrochloric acid", "Boric acid"], a: "Hydrochloric acid" },
+  { q: "The 'plum pudding' model of the atom was proposed by:", o: ["Rutherford", "Bohr", "Thomson", "Dalton"], a: "Thomson" },
+  { q: "What is the common name for sodium chloride?", o: ["Baking soda", "Table salt", "Bleach", "Sugar"], a: "Table salt" },
+
+  // Biology (10 questions)
+  { q: "What is the powerhouse of the cell?", o: ["Nucleus", "Mitochondria", "Ribosome", "Endoplasmic Reticulum"], a: "Mitochondria" },
+  { q: "Which of the following is the universal blood recipient?", o: ["A+", "B-", "AB+", "O-"], a: "AB+" },
+  { q: "What is the primary function of red blood cells?", o: ["Fighting infection", "Clotting blood", "Transporting oxygen", "Producing antibodies"], a: "Transporting oxygen" },
+  { q: "The process by which plants make their own food is called:", o: ["Respiration", "Transpiration", "Photosynthesis", "Germination"], a: "Photosynthesis" },
+  { q: "Which part of the brain controls balance and coordination?", o: ["Cerebrum", "Cerebellum", "Medulla Oblongata", "Hypothalamus"], a: "Cerebellum" },
+  { q: "What is the largest organ in the human body?", o: ["Heart", "Brain", "Skin", "Liver"], a: "Skin" },
+  { q: "Which vitamin is essential for blood clotting?", o: ["Vitamin A", "Vitamin C", "Vitamin D", "Vitamin K"], a: "Vitamin K" },
+  { q: "The functional unit of the kidney is the:", o: ["Neuron", "Alveolus", "Nephron", "Hepatocyte"], a: "Nephron" },
+  { q: "Which of the following is a prokaryotic cell?", o: ["Animal cell", "Plant cell", "Bacterial cell", "Fungal cell"], a: "Bacterial cell" },
+  { q: "What are the building blocks of proteins?", o: ["Monosaccharides", "Nucleotides", "Fatty acids", "Amino acids"], a: "Amino acids" },
+
+  // English (10 questions)
+  { q: "Choose the synonym for 'Abundant':", o: ["Scarce", "Plentiful", "Rare", "Limited"], a: "Plentiful" },
+  { q: "Identify the antonym for 'Benevolent':", o: ["Kind", "Generous", "Cruel", "Compassionate"], a: "Cruel" },
+  { q: "Complete the sentence: 'She is allergic ______ peanuts.'", o: ["to", "from", "with", "at"], a: "to" },
+  { q: "Which of the following is a correct plural form?", o: ["Childs", "Mouses", "Feets", "Children"], a: "Children" },
+  { q: "Choose the correct spelling:", o: ["recieve", "believe", "deceive", "concieve"], a: "believe" },
+  { q: "Identify the correct sentence structure:", o: ["He going to store.", "He goes to the store.", "He go to store.", "He went store."], a: "He goes to the store." },
+  { q: "The word 'capricious' means:", o: ["Consistent", "Predictable", "Fickle", "Stable"], a: "Fickle" },
+  { q: "Fill in the blank: 'Neither John ___ Mary was present.'", o: ["or", "nor", "and", "but"], a: "nor" },
+  { q: "Choose the most appropriate idiom: 'To hit the nail on the head' means:", o: ["To miss the point", "To hit something hard", "To say exactly the right thing", "To avoid a problem"], a: "To say exactly the right thing" },
+  { q: "Which of the following words is a verb?", o: ["Beautiful", "Quickly", "Run", "Happiness"], a: "Run" }
+];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+shuffle(quizData);
+
+let currentQ = 0;
+let rightAnswers = 0;
+let wrongAnswers = 0;
+let seconds = 0;
+let userName = "";
+let timerInterval;
+
+function startQuiz() {
+  const input = document.getElementById("userNameInput").value.trim();
+  if (input === "") {
+    alert("Please enter your name.");
+    return;
+  }
+  userName = input;
+  document.getElementById("namePrompt").style.display = "none";
+  document.getElementById("quizSection").style.display = "block";
+  loadQuestion();
+  startTimer();
+}
+
+// Function to handle Enter key press
+function checkEnter(event) {
+  if (event.key === "Enter") {
+    startQuiz();
+  }
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    seconds++;
+    const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+    const secs = String(seconds % 60).padStart(2, '0');
+    document.getElementById("timer").innerText = `⏱️ ${hrs}:${mins}:${secs}`;
+  }, 1000);
+}
+
+function loadQuestion() {
+  const qData = quizData[currentQ];
+  document.getElementById("qCounter").innerText = `❓ Question ${currentQ + 1} of ${quizData.length}`;
+  document.getElementById("questionText").innerHTML = qData.q;
+
+  const optionsHTML = qData.o.map(opt =>
+    `<label><input type="radio" name="option" value="${opt}"> ${opt}</label>`
+  ).join("");
+  document.getElementById("optionsContainer").innerHTML = optionsHTML;
+}
+
+function nextQuestion() {
+  const selected = document.querySelector('input[name="option"]:checked');
+  if (!selected) {
+    alert("Please select an answer!");
+    return;
+  }
+
+  // A more robust way to clean HTML tags and emojis for comparison
+  // This regex removes any HTML tags (<...>) and common emoji patterns.
+  // For emojis, it's simplified; a more comprehensive emoji regex might be needed for all scenarios.
+  const cleanString = (str) => str.replace(/<[^>]*>/g, '').replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}]/gu, '').trim();
+
+  const selectedValueClean = cleanString(selected.value);
+  const correctAnswerClean = cleanString(quizData[currentQ].a);
+
+  if (selectedValueClean === correctAnswerClean) {
+    rightAnswers++;
+  } else {
+    wrongAnswers++;
+  }
+
+  document.getElementById("right").innerText = rightAnswers;
+  document.getElementById("wrong").innerText = wrongAnswers;
+
+  currentQ++;
+  if (currentQ < quizData.length) {
+    loadQuestion();
+  } else {
+    clearInterval(timerInterval);
+    showResult();
+  }
+}
+
+function showResult() {
+  document.querySelector(".quiz-container").style.display = "none";
+  const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+  const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+  const secs = String(seconds % 60).padStart(2, '0');
+
+  const totalQuestions = quizData.length;
+  const percentage = (rightAnswers / totalQuestions) * 100;
+
+  document.getElementById("resultContainer").innerHTML = `
+    👦 Student: <strong>${userName}</strong><br><br>
+    ✅ Correct: <span class="green">${rightAnswers}</span> |
+    ❌ Wrong: <span class="red">${wrongAnswers}</span><br>
+    <span class="percentage-display">📊 Percentage: ${percentage.toFixed(2)}%</span><br>
+    🎯 Total Score: ${rightAnswers} / ${quizData.length}<br>
+    ⏱️ Time Taken: ${hrs}:${mins}:${secs}
+  `;
+}
+</script>
+
+</body>
+</html>
