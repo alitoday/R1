@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NUST NET Test</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background: #f0f8ff;
+}
+.header, .quiz-container {
+  max-width: 800px;
+  margin: auto;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+.center-status {
+  flex: 1 1 100%;
+  text-align: center;
+  margin-top: 10px;
+}
+.quiz-container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #ccc;
+}
+.question {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+.options label {
+  display: block;
+  margin: 5px 0;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.options label:hover {
+  background-color: #e6f7ff;
+}
+.options label input[type="radio"] {
+  margin-right: 10px;
+}
+.options label img {
+  vertical-align: middle;
+  margin-right: 8px;
+  width: 30px;
+  height: 30px;
+}
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+.btn {
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 5px 0;
+  flex: 1 1 45%;
+  min-width: 120px;
+}
+#checkButton {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+#nextButton {
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+.result {
+  margin-top: 30px;
+  font-size: 22px;
+  text-align: center;
+  font-weight: bold;
+}
+.green {
+  color: green;
+}
+.red {
+  color: red;
+}
+#namePrompt {
+  text-align: center;
+  margin-top: 50px;
+  padding: 20px;
+}
+#namePrompt input {
+  padding: 10px;
+  font-size: 16px;
+  width: 80%;
+  max-width: 300px;
+  margin: 10px auto;
+  display: block;
+}
+#namePrompt button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin: 10px auto;
+  cursor: pointer;
+  display: block;
+}
+.percentage-display {
+  font-size: 28px;
+  font-weight: bolder;
+  margin: 15px 0;
+  display: block;
+}
+.bold-content {
+  font-weight: bold;
+}
+.correct-answer-highlight {
+  background-color: #d4edda;
+  border-color: #28a745;
+  color: #155724;
+}
+.wrong-answer-highlight {
+  background-color: #f8d7da;
+  border-color: #dc3545;
+  color: #721c24;
+}
+#loadingMessage {
+  text-align: center;
+  margin-top: 20px;
+  font-style: italic;
+  color: #666;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+  .quiz-container {
+    padding: 15px;
+  }
+  .question {
+    font-size: 18px;
+  }
+  .header {
+    font-size: 16px;
+  }
+  .btn {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+  .result {
+    font-size: 18px;
+  }
+  .percentage-display {
+    font-size: 22px;
+  }
+  #namePrompt {
+    margin-top: 30px;
+  }
+  .options label {
+    padding: 6px 10px;
+    font-size: 16px;
+  }
+}
+</style>
+</head>
+<body>
+<div id="namePrompt">
+  <h2>Please enter your name to start the NUST NET Test</h2>
+  <input type="text" id="userNameInput" placeholder="Enter your name" onkeyup="checkEnter(event)" />
+  <button onclick="startQuiz()">Start Test</button>
+</div>
+<div id="loadingMessage" style="display: none;">Loading questions...</div>
+<div id="quizSection" style="display: none;">
+  <div class="header">
+    <div id="qCounter"></div>
+    <div id="timer">⏱️ 00:00:00</div>
+    <div class="center-status">
+      ✅ <span id="right" class="green">0</span> | ❌ <span id="wrong" class="red">0</span>
+    </div>
+  </div>
+  <div class="quiz-container">
+    <div class="question" id="questionText">Loading...</div>
+    <div class="options" id="optionsContainer"></div>
+    <div class="button-container">
+      <button class="btn" id="checkButton" onclick="checkAnswer()">Check Answer</button>
+      <button class="btn" id="nextButton" onclick="nextQuestion()">Next Question</button>
+    </div>
+  </div>
+  <div class="result" id="resultContainer"></div>
+</div>
+
+<script>
+// This will hold the selected questions for the current test
+let quizData = [];
+let questionPool = []; // Will be populated from the default questions
+let currentQ = 0;
+let rightAnswers = 0;
+let wrongAnswers = 0;
+let seconds = 0;
+let userName = "";
+let timerInterval;
+let answerChecked = false;
+
+// Default NUST NET 2025 Questions (70 Math, 30 Computer)
+const DEFAULT_QUESTIONS = [
+  // Math Questions (70 questions)
+  { q: "If f(x) = x³ - 3x² + 5, what is f'(2)?", o: ["0", "3", "6", "12"], a: "0" },
+  { q: "What is the solution to the equation 2x² - 5x - 3 = 0?", o: ["x = -1/2, x = 3", "x = 1/2, x = -3", "x = 2, x = -3", "x = -2, x = 3"], a: "x = -1/2, x = 3" },
+  { q: "What is the value of sin(π/3)?", o: ["1/2", "√2/2", "√3/2", "1"], a: "√3/2" },
+  { q: "If a matrix A has dimensions 3×2 and matrix B has dimensions 2×4, what are the dimensions of AB?", o: ["2×2", "3×4", "4×3", "Cannot be multiplied"], a: "3×4" },
+  { q: "What is the derivative of ln(x² + 1)?", o: ["1/(x² + 1)", "2x/(x² + 1)", "2x ln(x² + 1)", "2x/(x² + 1)²"], a: "2x/(x² + 1)" },
+  { q: "What is the sum of the infinite series 1 + 1/2 + 1/4 + 1/8 + ...?", o: ["1", "2", "∞", "1.5"], a: "2" },
+  { q: "If z = 3 + 4i, what is |z|?", o: ["5", "7", "12", "25"], a: "5" },
+  { q: "What is the integral of eˣ dx from 0 to 1?", o: ["0", "e", "e - 1", "1"], a: "e - 1" },
+  { q: "What is the probability of getting exactly two heads in three tosses of a fair coin?", o: ["1/8", "1/4", "3/8", "1/2"], a: "3/8" },
+  { q: "What is the solution to the differential equation dy/dx = y with y(0) = 1?", o: ["y = x", "y = eˣ", "y = ln(x)", "y = x²"], a: "y = eˣ" },
+  { q: "What is the value of lim(x→0) (sin x)/x?", o: ["0", "1", "∞", "Undefined"], a: "1" },
+  { q: "What is the area of a circle with circumference 10π?", o: ["10π", "25π", "50π", "100π"], a: "25π" },
+  { q: "If A and B are independent events with P(A) = 0.4 and P(B) = 0.5, what is P(A∩B)?", o: ["0.1", "0.2", "0.9", "1"], a: "0.2" },
+  { q: "What is the rank of the matrix [[1, 2], [3, 6]]?", o: ["0", "1", "2", "Undefined"], a: "1" },
+  { q: "What is the general solution to y'' + y = 0?", o: ["y = A sin x", "y = A cos x", "y = A sin x + B cos x", "y = A eˣ"], a: "y = A sin x + B cos x" },
+  { q: "Solve for x: log₂(x) = 3", o: ["6", "8", "9", "16"], a: "8" },
+  { q: "What is the magnitude of the vector 3i - 4j?", o: ["1", "5", "7", "25"], a: "5" },
+  { q: "What is the value of ∫(1/x) dx?", o: ["ln|x| + C", "x² + C", "-1/x² + C", "eˣ + C"], a: "ln|x| + C" },
+  { q: "If the radius of a circle is doubled, by what factor does its area increase?", o: ["2", "3", "4", "8"], a: "4" },
+  { q: "What is the period of the function sin(2x)?", o: ["π/2", "π", "2π", "4π"], a: "π" },
+  { q: "Find the equation of the line passing through (1, 2) with a slope of 3.", o: ["y = 3x - 1", "y = 3x + 1", "y = 2x + 1", "y = x + 3"], a: "y = 3x - 1" },
+  { q: "What is the determinant of the matrix [[2, 1], [4, 3]]?", o: ["1", "2", "6", "10"], a: "2" },
+  { q: "If a fair die is rolled, what is the probability of getting an even number?", o: ["1/6", "1/3", "1/2", "2/3"], a: "1/2" },
+  { q: "What is the result of (3 + 2i) + (1 - 4i)?", o: ["4 + 6i", "4 - 2i", "2 - 6i", "2 + 2i"], a: "4 - 2i" },
+  { q: "What is the principal value of cos⁻¹(-1/2)?", o: ["π/3", "π/6", "2π/3", "5π/6"], a: "2π/3" },
+  { q: "What is the product of the roots of the quadratic equation ax² + bx + c = 0?", o: ["-b/a", "b/a", "c/a", "-c/a"], a: "c/a" },
+  { q: "If y = xⁿ, what is dy/dx?", o: ["nxⁿ⁻¹", "xⁿ⁻¹", "n xⁿ", "n"], a: "nxⁿ⁻¹" },
+  { q: "What is the range of sin(x)?", o: ["(-∞, ∞)", "[0, 1]", "[-1, 1]", "(-1, 1)"], a: "[-1, 1]" },
+  { q: "What is the exact value of tan(45°)?", o: ["0", "1", "√3", "Undefined"], a: "1" },
+  { q: "What is the area of a triangle with base 10 and height 5?", o: ["25", "30", "50", "100"], a: "25" },
+  { q: "What is the solution to |x - 3| = 5?", o: ["x = 8", "x = -2", "x = 8 or x = -2", "No solution"], a: "x = 8 or x = -2" },
+  { q: "What is the derivative of sin(x²)?", o: ["cos(x²)", "2x cos(x²)", "2x sin(x²)", "cos(x)"], a: "2x cos(x²)" },
+  { q: "What is the sum of the first 10 odd numbers?", o: ["90", "100", "110", "121"], a: "100" },
+  { q: "If A = {1, 2, 3} and B = {3, 4, 5}, what is A ∪ B?", o: ["{3}", "{1, 2, 3, 4, 5}", "{1, 2, 4, 5}", "{ }"], a: "{1, 2, 3, 4, 5}" },
+  { q: "What is the equation of a circle centered at (0,0) with radius 5?", o: ["x² + y² = 5", "x² + y² = 25", "(x-5)² + y² = 0", "x + y = 5"], a: "x² + y² = 25" },
+  { q: "What is the value of 0!?", o: ["0", "1", "Undefined", "Infinity"], a: "1" },
+  { q: "What is the integral of cos(x) dx?", o: ["sin(x) + C", "-sin(x) + C", "tan(x) + C", "sec(x) + C"], a: "sin(x) + C" },
+  { q: "If two lines are parallel, what is the relationship between their slopes?", o: ["Equal", "Negative reciprocals", "Product is -1", "No relation"], a: "Equal" },
+  { q: "What is the number of permutations of 3 items taken 2 at a time (P(3,2))?", o: ["1", "3", "6", "9"], a: "6" },
+  { q: "What is the amplitude of the function 3sin(2x)?", o: ["1", "2", "3", "4"], a: "3" },
+  { q: "What is the inverse of the matrix [[1, 0], [0, 1]]?", o: ["[[0, 1], [1, 0]]", "[[1, 0], [0, 1]]", "[[-1, 0], [0, -1]]", "Undefined"], a: "[[1, 0], [0, 1]]" },
+  { q: "What is the slope of the line perpendicular to y = 2x + 5?", o: ["2", "-2", "1/2", "-1/2"], a: "-1/2" },
+  { q: "What is the value of log(100)?", o: ["1", "2", "10", "100"], a: "2" },
+  { q: "What is the sum of the angles in a triangle?", o: ["90°", "180°", "270°", "360°"], a: "180°" },
+  { q: "If a = 5 and b = 12, what is c in a right triangle where c is the hypotenuse?", o: ["13", "14", "15", "17"], a: "13" },
+  { q: "What is the derivative of e^(5x)?", o: ["e^(5x)", "5e^(5x)", "e^(5x)/5", "ln(5x)"], a: "5e^(5x)" },
+  { q: "What is the maximum value of cos(x)?", o: ["-1", "0", "1", "π"], a: "1" },
+  { q: "What is the area of a square with side length 7?", o: ["14", "28", "49", "64"], a: "49" },
+  { q: "How many distinct arrangements can be made from the letters of the word 'APPLE'?", o: ["5", "20", "60", "120"], a: "60" },
+  { q: "What is the solution to 3x - 7 = 8?", o: ["x = 3", "x = 5", "x = 15", "x = 1/3"], a: "x = 5" },
+  { q: "What is the value of ∫(x²) dx?", o: ["x³/3 + C", "2x + C", "x³ + C", "1/x + C"], a: "x³/3 + C" },
+  { q: "If P(A) = 0.6, what is P(A') (complement of A)?", o: ["0.4", "0.6", "1", "0"], a: "0.4" },
+  { q: "What is the domain of f(x) = √x?", o: ["(-∞, ∞)", "[0, ∞)", "(0, ∞)", "(-∞, 0]"], a: "[0, ∞)" },
+  { q: "What is the equation of the normal to y = x² at x = 1?", o: ["y = -1/2 x + 3/2", "y = 2x - 1", "y = x + 1", "y = -x + 2"], a: "y = -1/2 x + 3/2" },
+  { q: "What is the value of (cos θ)² + (sin θ)²?", o: ["0", "1", "2", "tan θ"], a: "1" },
+  { q: "If a sequence is defined by aₙ = 2n + 1, what is the 5th term?", o: ["9", "10", "11", "12"], a: "11" },
+  { q: "What is the distance between the points (1, 2) and (4, 6)?", o: ["3", "4", "5", "7"], a: "5" },
+  { q: "What is the general form of a quadratic equation?", o: ["ax + b = 0", "ax² + bx + c = 0", "ax³ + bx² + cx + d = 0", "y = mx + c"], a: "ax² + bx + c = 0" },
+  { q: "What is the derivative of tan(x)?", o: ["sec(x)tan(x)", "sec²(x)", "-cot(x)", "sin(x)"], a: "sec²(x)" },
+  { q: "What is the value of e⁰?", o: ["0", "1", "e", "Undefined"], a: "1" },
+  { q: "If a set has n elements, how many subsets does it have?", o: ["n", "2n", "n²", "2ⁿ"], a: "2ⁿ" },
+  { q: "What is the product of i and -i?", o: ["1", "-1", "i", "-i"], a: "1" },
+  { q: "What is the radius of convergence of the series ∑ xⁿ/n! ?", o: ["0", "1", "e", "∞"], a: "∞" },
+  { q: "What is the equation of the line passing through (0, 0) and (1, 1)?", o: ["y = 0", "y = x", "y = 1", "x = y + 1"], a: "y = x" },
+  { q: "What is the value of sinh(0)?", o: ["0", "1", "-1", "e"], a: "0" },
+  { q: "If a = [2, 3] and b = [1, 4], what is a ⋅ b (dot product)?", o: ["5", "10", "14", "Undefined"], a: "14" },
+  { q: "What is the value of ∫₀¹ x dx?", o: ["0", "1/2", "1", "2"], a: "1/2" },
+  { q: "What is the solution to 5x > 20?", o: ["x < 4", "x > 4", "x = 4", "x ≥ 4"], a: "x > 4" },
+  { q: "What is the formula for the nth term of an arithmetic progression?", o: ["a + (n-1)d", "arⁿ⁻¹", "n/2(2a + (n-1)d)", "a + nd"], a: "a + (n-1)d" },
+  { q: "What is the derivative of cos(x)?", o: ["sin(x)", "-sin(x)", "sec(x)", "tan(x)"], a: "-sin(x)" },
+
+  // Computer Questions (30 questions)
+  { q: "What does CPU stand for?", o: ["Central Processing Unit", "Computer Personal Unit", "Central Power Unit", "Control Program Utility"], a: "Central Processing Unit" },
+  { q: "Which of these is an input device?", o: ["Printer", "Monitor", "Keyboard", "Speaker"], a: "Keyboard" },
+  { q: "What is RAM?", o: ["Read Only Memory", "Random Access Memory", "Remote Access Module", "Rapid Application Management"], a: "Random Access Memory" },
+  { q: "What is the full form of URL?", o: ["Uniform Resource Locator", "Universal Resource Link", "Unified Register Link", "Uniform Remote Location"], a: "Uniform Resource Locator" },
+  { q: "Which company developed the Windows operating system?", o: ["Apple", "IBM", "Microsoft", "Google"], a: "Microsoft" },
+  { q: "What is the primary function of an operating system?", o: ["To play games", "To manage computer hardware and software resources", "To browse the internet", "To create documents"], a: "To manage computer hardware and software resources" },
+  { q: "Which of the following is a programming language?", o: ["HTML", "CSS", "Python", "JPEG"], a: "Python" },
+  { q: "What does 'WWW' stand for?", o: ["World Wide Web", "World Wide Widget", "Web World Wide", "Wireless Web Works"], a: "World Wide Web" },
+  { q: "What is a 'byte'?", o: ["A single digit (0 or 1)", "8 bits", "16 bits", "32 bits"], a: "8 bits" },
+  { q: "Which type of memory is volatile?", o: ["ROM", "Hard Disk", "Flash Drive", "RAM"], a: "RAM" },
+  { q: "What is a 'firewall' in computing?", o: ["A type of strong password", "A security system that controls incoming and outgoing network traffic", "A program for optimizing disk space", "A tool for creating websites"], a: "A security system that controls incoming and outgoing network traffic" },
+  { q: "What is phishing?", o: ["A type of computer virus", "An attempt to obtain sensitive information by disguising as a trustworthy entity", "A method of creating databases", "A technique for programming robots"], a: "An attempt to obtain sensitive information by disguising as a trustworthy entity" },
+  { q: "Which port is commonly used for network cables?", o: ["USB", "HDMI", "RJ-45", "VGA"], a: "RJ-45" },
+  { q: "What is cloud computing?", o: ["Computing using only Apple devices", "Storing and accessing data and programs over the Internet instead of your computer's hard drive", "A new type of supercomputer", "Processing data on a local network"], a: "Storing and accessing data and programs over the Internet instead of your computer's hard drive" },
+  { q: "What does 'GUI' stand for?", o: ["General User Interface", "Graphical User Interface", "Global Utility Information", "Gigabit Usage Indicator"], a: "Graphical User Interface" },
+  { q: "Which of these is a web browser?", o: ["Microsoft Word", "Google Chrome", "Adobe Photoshop", "Microsoft Excel"], a: "Google Chrome" },
+  { q: "What is the function of an antivirus software?", o: ["To boost internet speed", "To protect against malicious software", "To design graphics", "To create spreadsheets"], a: "To protect against malicious software" },
+  { q: "What is a 'pixel'?", o: ["A unit of sound", "A single point in a graphic image", "A type of printer", "A computer chip"], a: "A single point in a graphic image" },
+  { q: "Which device is used to connect multiple computers in a network?", o: ["Modem", "Router", "Printer", "Scanner"], a: "Router" },
+  { q: "What is 'HTML' primarily used for?", o: ["Programming complex applications", "Creating dynamic web pages", "Structuring content on the web", "Styling web pages"], a: "Structuring content on the web" },
+  { q: "What is the smallest unit of digital information?", o: ["Byte", "Kilobyte", "Bit", "Megabyte"], a: "Bit" },
+  { q: "Which of the following is an example of 'software'?", o: ["CPU", "RAM", "Microsoft Office", "Hard Drive"], a: "Microsoft Office" },
+  { q: "What is 'broadband'?", o: ["A narrow band of frequencies", "High-capacity transmission technique using a wide range of frequencies", "A type of computer monitor", "A specific internet service provider"], a: "High-capacity transmission technique using a wide range of frequencies" },
+  { q: "What is a 'database'?", o: ["A collection of computer hardware", "An organized collection of data", "A type of computer game", "A coding language"], a: "An organized collection of data" },
+  { q: "What is 'malware'?", o: ["Software for making music", "Software designed to intentionally damage or disable computers and computer systems", "Software used for video editing", "Software for network management"], a: "Software designed to intentionally damage or disable computers and computer systems" },
+  { q: "Which of these is a common file extension for images?", o: ["DOCX", "MP3", "JPEG", "EXE"], a: "JPEG" },
+  { q: "What does 'IP' stand for in 'IP address'?", o: ["Internet Protocol", "Internal Program", "Internet Provider", "Information Packet"], a: "Internet Protocol" },
+  { q: "What is 'data encryption'?", o: ["Storing data on a remote server", "Converting data into a code to prevent unauthorized access", "Deleting old data", "Copying data to multiple locations"], a: "Converting data into a code to prevent unauthorized access" },
+  { q: "Which of these is an example of an 'operating system'?", o: ["Microsoft Word", "Google Chrome", "Linux", "Adobe Photoshop"], a: "Linux" },
+  { q: "What is the purpose of 'ROM'?", o: ["To store temporary data", "To perform calculations", "To store permanent instructions for the computer to start up", "To run applications"], a: "To store permanent instructions for the computer to start up" }
+];
+
+const MATH_QUESTION_COUNT = 70;
+const COMPUTER_QUESTION_COUNT = 30;
+const TOTAL_QUIZ_QUESTIONS = MATH_QUESTION_COUNT + COMPUTER_QUESTION_COUNT;
+
+// This function is no longer needed since questions are embedded
+// function loadQuestionsFromFile() {
+//   // This part of the code is removed as questions are now directly in DEFAULT_QUESTIONS
+// }
+
+function getRandomQuestions(pool, count) {
+  if (pool.length <= count) return [...pool]; // Return all if pool is smaller than requested
+
+  const shuffled = [...pool].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
+}
+
+function startQuiz() {
+  const input = document.getElementById("userNameInput").value.trim();
+  if (input === "") {
+    alert("Please enter your name.");
+    return;
+  }
+  userName = input;
+
+  // Separate questions into Math and Computer categories based on the DEFAULT_QUESTIONS structure
+  const mathQuestions = DEFAULT_QUESTIONS.slice(0, MATH_QUESTION_COUNT);
+  const computerQuestions = DEFAULT_QUESTIONS.slice(MATH_QUESTION_COUNT);
+
+  const selectedMathQuestions = getRandomQuestions(mathQuestions, MATH_QUESTION_COUNT);
+  const selectedComputerQuestions = getRandomQuestions(computerQuestions, COMPUTER_QUESTION_COUNT);
+
+  quizData = [...selectedMathQuestions, ...selectedComputerQuestions];
+
+  // Shuffle the entire quizData to mix math and computer questions
+  quizData.sort(() => 0.5 - Math.random());
+
+  if (quizData.length === 0) {
+    alert("No questions available. Please try again later.");
+    return;
+  }
+
+  document.getElementById("namePrompt").style.display = "none";
+  document.getElementById("quizSection").style.display = "block";
+  loadQuestion();
+  startTimer();
+}
+
+// Function to handle Enter key press
+function checkEnter(event) {
+  if (event.key === "Enter") {
+    startQuiz();
+  }
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    seconds++;
+    const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+    const secs = String(seconds % 60).padStart(2, '0');
+    document.getElementById("timer").innerText = `⏱️ ${hrs}:${mins}:${secs}`;
+  }, 1000);
+}
+
+function loadQuestion() {
+  answerChecked = false; // Reset for new question
+  const qData = quizData[currentQ];
+  document.getElementById("qCounter").innerText = `❓ Question ${currentQ + 1} of ${quizData.length}`;
+  document.getElementById("questionText").innerHTML = qData.q;
+
+  const optionsHTML = qData.o.map(opt => `<label><input type="radio" name="option" value="${opt}"> ${opt}</label>`).join("");
+  document.getElementById("optionsContainer").innerHTML = optionsHTML;
+
+  // Remove previous highlights
+  const allLabels = document.querySelectorAll('#optionsContainer label');
+  allLabels.forEach(label => {
+    label.classList.remove('correct-answer-highlight', 'wrong-answer-highlight');
+    label.querySelector('input[type="radio"]').disabled = false; // Re-enable radios
+  });
+}
+
+function checkAnswer() {
+  const selected = document.querySelector('input[name="option"]:checked');
+  if (!selected) {
+    alert("Please select an answer!");
+    return;
+  }
+
+  const allOptions = document.querySelectorAll('#optionsContainer label');
+  const currentQuestionAnswer = quizData[currentQ].a;
+
+  // Disable all radio buttons
+  document.querySelectorAll('input[name="option"]').forEach(radio => {
+    radio.disabled = true;
+  });
+
+  let isCorrect = false;
+  allOptions.forEach(label => {
+    const optionValue = label.querySelector('input[type="radio"]').value;
+
+    if (optionValue === currentQuestionAnswer) {
+      label.classList.add('correct-answer-highlight'); // Highlight correct answer
+      if (selected.value === optionValue) { // If selected is also the correct one
+        isCorrect = true;
+      }
+    } else if (selected.value === optionValue) { // If selected is wrong
+      label.classList.add('wrong-answer-highlight'); // Highlight selected wrong answer
+    }
+  });
+
+  if (isCorrect) {
+    rightAnswers++;
+  } else {
+    wrongAnswers++;
+  }
+
+  document.getElementById("right").innerText = rightAnswers;
+  document.getElementById("wrong").innerText = wrongAnswers;
+  answerChecked = true;
+}
+
+function nextQuestion() {
+  if (!answerChecked) {
+    // If answer wasn't checked, count it as wrong
+    wrongAnswers++;
+    document.getElementById("wrong").innerText = wrongAnswers;
+  }
+
+  currentQ++;
+  if (currentQ < quizData.length) {
+    loadQuestion();
+  } else {
+    clearInterval(timerInterval);
+    showResult();
+  }
+}
+
+function showResult() {
+  document.querySelector(".quiz-container").style.display = "none";
+  const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+  const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+  const secs = String(seconds % 60).padStart(2, '0');
+  const totalQuestions = quizData.length;
+  const percentage = (rightAnswers / totalQuestions) * 100;
+
+  // Determine performance message
+  let performanceMsg = "";
+  if (percentage >= 80) {
+    performanceMsg = "Excellent! You're well prepared for NUST NET.";
+  } else if (percentage >= 60) {
+    performanceMsg = "Good! You have a solid foundation but could improve.";
+  } else if (percentage >= 40) {
+    performanceMsg = "Fair. Consider more focused preparation.";
+  } else {
+    performanceMsg = "Needs improvement. Please review the concepts thoroughly.";
+  }
+
+  document.getElementById("resultContainer").innerHTML = `
+    <h2>NUST NET Test Results</h2>
+    👨‍🎓 Student: <strong>${userName}</strong><br><br>
+    ✅ Correct: <span class="green">${rightAnswers}</span> | ❌ Wrong: <span class="red">${wrongAnswers}</span><br>
+    <span class="percentage-display">📊 Percentage: ${percentage.toFixed(2)}%</span><br>
+    🎯 Total Score: ${rightAnswers} / ${quizData.length}<br>
+    ⏱️ Time Taken: ${hrs}:${mins}:${secs}<br><br>
+    <strong>${performanceMsg}</strong>
+  `;
+}
+
+// Populate questionPool with DEFAULT_QUESTIONS on page load
+window.onload = function() {
+  questionPool = DEFAULT_QUESTIONS;
+  document.getElementById("namePrompt").style.display = "block"; // Show the name prompt immediately
+  document.getElementById("loadingMessage").style.display = "none";
+};
+</script>
+</body>
+</html>
